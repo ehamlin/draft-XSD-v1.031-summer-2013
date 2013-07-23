@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	
+	<!-- schema for <cpi_action>, used by the cpi_action event -->
+	
+	
+	<xs:complexType name="cpi_action">
+		<xs:sequence>
+			<xs:element name="person_id" type="identifier"/>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="remove"/>
+						<xs:enumeration value="none"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="cpi_role" type="cpi_role"/>
+			<xs:element name="role_status">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Unknown"/>
+						<xs:enumeration value="Substantiated"/>
+						<xs:enumeration value="Unsubstantiated"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="action_dtm" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="action_reason" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Substantiation"/>
+						<xs:enumeration value="Unsubstantiation"/>
+						<xs:enumeration value="Court order"/>
+						<xs:enumeration value="Appeal"/>
+						<xs:enumeration value="Expungement"/>
+						<xs:enumeration value="Other"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>	
+			
+			<!-- generally a CPI action will be associated with a case, so the following element would hold that case ID -->
+			<xs:element name="case_id" type="identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="case_type" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

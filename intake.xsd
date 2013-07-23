@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+	</xs:annotation>
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="address.xsd"/>
+	<xs:include schemaLocation="email.xsd"/>
+	<xs:include schemaLocation="phone.xsd"/>
+	<xs:include schemaLocation="person.xsd"/>
+	<xs:include schemaLocation="resource.xsd"/><!-- schema for a report of suspected abuse or neglect -->
+	
+	<xs:complexType name="intake_report">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="approve"/>
+						<xs:enumeration value="update"/><!--possible future use-->
+						<xs:enumeration value="delete"/><!--possible future use-->
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="report_id" type="identifier"/><!--this is from the intake system-->
+			<xs:element name="report_nm" type="xs:string" minOccurs="0"/>
+			<xs:element name="primary_caregiver_id" type="identifier" minOccurs="0"/><!--note that this is a structured type, not an integer-->
+			<xs:element name="report_taker" type="person"/><!--note: use a Person object to hold names and other worker info-->
+			<xs:element name="resource" type="resource" minOccurs="0"/><!--use this only if the alleged perp is a resource; name is an attribute within Resource -->
+			<xs:element name="supervisor" type="person"/>
+			<xs:element name="intake_type" type="intake_type"/>
+			<xs:element name="report_dtm" type="xs:dateTime"/><!--note: this is when the clock starts-->
+			<xs:element name="system_post_dtm" type="xs:dateTime"/>
+			<xs:element name="incident_dtm" type="xs:dateTime"/>
+			<xs:element name="reporter_type" type="reporter_type"/>
+			<xs:element name="imminent_danger" type="xs:boolean"/><!--currently passed as y/n by Intake - Intake will need to convert type-->
+			<xs:element name="response_time" type="xs:integer"/>
+			<xs:element name="owner_county" type="county"/>
+			<xs:element name="incident_county" type="county"/>
+			<xs:element name="restricted" type="xs:boolean"/><!--currently passed as y/n by Intake - Intake will need to convert type-->
+			<xs:element name="referral_method" type="referral_method"/>
+			<xs:element name="emergency" type="xs:boolean"/><!--currently passed as y/n by Intake - Intake will need to convert type-->
+			<xs:element name="incident_address" type="address"/>
+			<xs:element name="mandatory_assessment" type="xs:boolean"/>
+			
+			<xs:element name="safe_haven_intake" type="xs:boolean"/>   <!--deprecated Intake 3.0-->
+			
+			<!--remove at a later date - deprecated as Intake 3.0-->
+			
+			<xs:element name="near_fatality" type="xs:boolean"/>
+			<xs:element name="fatality" type="xs:boolean"/>
+			<xs:element name="sexual_predator_living_in_home" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="unaccompanied_minor_in_shelter" type="xs:boolean" minOccurs="0"/>
+			
+			<!--EOM-->
+			
+			<xs:element name="domestic_violence" type="xs:boolean" minOccurs="0"/><!--added 11/22-->
+			<xs:element name="domestic_violence_details" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="familymember_hurt_assaulted" type="xs:boolean"/>
+						<xs:element name="familymember_hurt_assaulted_description" type="xs:string" minOccurs="0"/>
+						<xs:element name="effect_on_child" type="xs:string"/>
+						<xs:element name="police_ever_called" type="xs:boolean"/>
+						<xs:element name="police_called_how_many_times" type="xs:string" minOccurs="0"/>
+						<xs:element name="anyone_arrested" type="xs:boolean"/>
+						<xs:element name="who_was_arrested" type="xs:string" minOccurs="0"/>
+						<xs:element name="child_location_during_violence" type="xs:string"/>
+						<xs:element name="children_safe_now" type="xs:boolean"/>
+						<xs:element name="parents_safe_now" type="xs:boolean"/>
+						<xs:element name="current_caregiver" type="xs:string"/>
+						<xs:element name="parent_caretaker_self_protection" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="supervisor_comments" type="xs:string" minOccurs="0"/>
+			<xs:element name="intake_worker_comments" type="xs:string" minOccurs="0"/><!-- Compound/array subrecords; types are defined below --><!-- Intakeperson is a 1..n set of all the persons associated with an intake, regardless of role (reporter, perp, victim, etc.) -->
+			<xs:element name="intakeperson" minOccurs="1" maxOccurs="unbounded" type="reportperson"/><!-- Note that each instance of a relationship is linked to an instance of an intakeperson via pers_ID -->
+			<xs:element name="reportpersonrelationship" type="reportpersonrelationship" minOccurs="0" maxOccurs="unbounded"/><!-- Note that minOccurs is 0 on allegations because if the intake is just I&R, there is no allegation -->
+			<xs:element name="reportpersonallegation" type="reportpersonallegation" minOccurs="0" maxOccurs="unbounded"/><!-- Worker safety record is a singleton element -->
+			<xs:element name="reportworkersafety" type="reportworkersafety" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="narrative" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType><!-- Supporting type definitions referenced in "report" above -->
+	
+	<xs:complexType name="reportperson">
+		<xs:sequence>
+			<xs:element name="person" type="person"/><!--this contains a person_id object of type Identifier, allowing reference to various systems' native IDs-->
+			<xs:element name="report_source" type="xs:string"/><!--???-->
+			<xs:element name="role_type" type="intake_role" maxOccurs="unbounded"/>
+			<xs:element name="age" type="year_month_age"/><!--this structured type eliminates the need for the old "is age in months or years" element-->
+			<xs:element name="reporter" type="xs:boolean"/><!--currently passed as y/n by Intake - Intake will need to convert type-->
+			<xs:element name="household_member" type="xs:boolean"/><!--currently passed as y/n by Intake - Intake will need to convert type-->
+			<xs:element name="caregiver_type" type="caregiver_type"/>
+			<xs:element name="education_level" type="education_level"/>
+			<xs:element name="age_is_estimated" type="xs:boolean"/><!--currently passed as y/n by Intake - Intake will need to convert type-->
+			<xs:element name="child_is_ward_or_probation" type="xs:boolean"/>
+			<xs:element name="child_on_ventilator" type="xs:boolean"/>
+			<xs:element name="child_on_intensive_care" type="xs:boolean"/>
+			<xs:element name="near_fatality" type="xs:boolean" minOccurs="0"/>
+			
+			<xs:element name="fatality" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="unexplained" type="xs:boolean" minOccurs="0"/>			
+			<xs:element name="sexual_predator_living_in_home" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="unaccompanied_minor_in_shelter" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="imminent_danger_explanation" type="xs:string"/>
+			<xs:element name="imminent_danger" type="xs:boolean"/>
+			<xs:element name="child_needs_medical_treatment" type="xs:boolean"/>
+			<xs:element name="child_currently_receives_medical_treatment" type="xs:boolean"/>
+			<xs:element name="current_medical_treatment_explanation" type="xs:string"/>
+			<xs:element name="child_medication_info" type="xs:string"/>
+			<xs:element name="service_request_days" type="xs:integer"/>
+			<xs:element name="cps_alert" type="cps_alert" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="reportpersonrelationship">
+		<xs:sequence><!--note that the IDs used here used to be simple integers corresponding to reportperson.person_id.id_value.  
+			Changed them to the complex identifier type on 10/6/11 to recognize the possibility to persons may come from various
+			systems via a global search, and to support ICWIS migration.
+			-->
+			<xs:element name="person_id" type="identifier"/>
+			<xs:element name="child_person_id" type="identifier"/>
+			<xs:element name="relationship" type="relationship"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="reportpersonallegation">
+		<xs:sequence>
+			<xs:element name="victim_person_id" type="identifier"/>
+			<xs:element name="perpetrator_person_id" type="identifier"/>
+			<xs:element name="allegation" type="allegation_type"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="reportworkersafety">
+		<xs:sequence>
+			<xs:element name="report_id" type="xs:integer"/><!--REMOVE LATER-->
+			<xs:element name="animal_risk" type="xs:boolean"/>
+			<xs:element name="animal_risk_explanation" type="xs:string"/>
+			<xs:element name="violence_risk" type="xs:boolean"/>
+			<xs:element name="drug_risk" type="xs:boolean"/>
+			<xs:element name="drug_type" type="xs:string"/>
+			<xs:element name="drug_use_frequency" type="xs:string"/>
+			<xs:element name="remote_location" type="xs:boolean"/>
+			<xs:element name="disease_risk" type="xs:boolean"/>
+			<xs:element name="disease_risk_explanation" type="xs:string"/>
+			<xs:element name="mental_illness_risk" type="xs:boolean"/>
+			<xs:element name="mental_illness_who" type="xs:string" />
+			<xs:element name="mental_illness_type" type="xs:string" />
+			<xs:element name="weapons_risk" type="xs:boolean"/>
+			<xs:element name="weapons_risk_explanation" type="xs:string"/>
+			<xs:element name="other_risk" type="xs:boolean"/>
+			<xs:element name="other_risk_explanation" type="xs:string"/>
+			<xs:element name="no_apparent_risk" type="xs:boolean"/>
+			<xs:element name="gang_risk" type="xs:boolean"/>
+			<xs:element name="meth_lab_risk" type="xs:boolean"/>
+			<!--xs:element name="suspect_arrested" type="xs:boolean"/>
+			<xs:element name="arrest_explanation" type="xs:string"/-->
+			<xs:element name="criminal_activity" type="xs:boolean"/>
+			<xs:element name="criminal_activity_explanation" type="xs:string"/>
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="intake_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CPS"/><!--formerly "1"-->
+			<xs:enumeration value="Institutional"/><!--formerly "2"-->
+			<xs:enumeration value="Licensing Complaint"/><!--formerly "3"-->
+			<xs:enumeration value="Service Request"/><!-- deprecated in Intake 3.0, remove later -->
+			<xs:enumeration value="Safe Haven Baby"/>
+			<xs:enumeration value="Courtesy Interview"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="intake_role">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Victim"/>
+			<xs:enumeration value="Perpetrator"/>
+			<xs:enumeration value="Reporter"/>
+			<xs:enumeration value="Victim and Perpetrator"/>
+			<xs:enumeration value="Not Involved"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="caregiver_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Primary Caregiver"/>
+			<xs:enumeration value="Secondary Caregiver"/>
+			<xs:enumeration value="Not a Caregiver"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="referral_method">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Email"/>
+			<xs:enumeration value="Phone"/>
+			<xs:enumeration value="Other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="education_level">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="No formal education"/>
+			<xs:enumeration value="Primary school"/>
+			<xs:enumeration value="Secondary school"/>
+			<xs:enumeration value="Post-secondary school"/>
+			<xs:enumeration value="Professional"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="reporter_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Victim"/>
+			<xs:enumeration value="Anonymous"/>
+			<xs:enumeration value="Baby Sitter/Day Care"/>
+			<xs:enumeration value="Community Mental Health Center"/>
+			<xs:enumeration value="Coroner"/>
+			<xs:enumeration value="Court/Probation"/>
+			<xs:enumeration value="Friend/Neighbor"/>
+			<xs:enumeration value="Head Start"/>
+			<xs:enumeration value="Hospital/Clinic"/>
+			<xs:enumeration value="Institution Staff"/>
+			<xs:enumeration value="Landlord"/>
+			<xs:enumeration value="Law Enforcement"/>
+			<xs:enumeration value="Military Personnel"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Other Medical"/>
+			<xs:enumeration value="Other Mental Health Personnel"/>
+			<xs:enumeration value="Parent/Guardian"/>
+			<xs:enumeration value="Perpetrator Self-report"/>
+			<xs:enumeration value="Referring Physician"/>
+			<xs:enumeration value="Private Social Agency"/>
+			<xs:enumeration value="Prosecutor"/>
+			<xs:enumeration value="Relative"/>
+			<xs:enumeration value="School Personnel"/>
+			<xs:enumeration value="Sibling"/>
+			<xs:enumeration value="Public Social Agency"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="allegation_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Physical Abuse"/>
+			<xs:enumeration value="Sexual Abuse"/>
+			<xs:enumeration value="Neglect"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="cps_alert">
+		<xs:sequence>
+			<xs:element name="alert_type">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="In State"/>
+						<xs:enumeration value="Out of State"/>
+						<xs:enumeration value="In State and Out of State"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="narrative" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="intake_retraction_request">  <!--added v013-->
+		<xs:sequence>
+			<xs:element name="report_id" type="identifier" />
+			<xs:element name="request_id" type="xs:string" />
+			<xs:element name="requesting_system" type="partner_system"/>
+			<xs:element name="reason" type="intake_retraction_reason" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+			
+	<xs:simpleType name="intake_retraction_reason">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Duplicate"/>
+			<xs:enumeration value="Screenout"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	
+	<xs:complexType name="intake_retraction_result">
+		<xs:sequence>
+			<xs:element name="report_id" type="identifier" />
+			<xs:element name="original_request_id" type="xs:string" />
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0" />
+			<xs:element name="result" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Success"/>
+						<xs:enumeration value="Declined"/>
+					</xs:restriction>	
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="reason" type="intake_retraction_reason" minOccurs="0" />
+			<xs:element name="comments" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>	
+	
+</xs:schema>

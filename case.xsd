@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+	</xs:annotation>
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="assessment.xsd"/>
+	<xs:include schemaLocation="intake.xsd"/>
+	<xs:include schemaLocation="resource_referral.xsd"/>
+	<xs:include schemaLocation="court_action.xsd"/>
+	<xs:include schemaLocation="placement.xsd"/><!-- schema for selected Case data -->
+	<xs:include schemaLocation="person.xsd"/>
+	<xs:include schemaLocation="financial_info.xsd"/>
+	
+	<xs:complexType name="case">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="describe"/>
+						<xs:enumeration value="create"/>
+						<xs:enumeration value="update participants"/>
+						<xs:enumeration value="update professionals"/>
+						<xs:enumeration value="update status"/>
+						<xs:enumeration value="update all"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/><!--used only in conjunction with case_inquiry event-->
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0"/>
+			<xs:element name="case_id" type="identifier"/>
+			<xs:element name="case_name" type="xs:string"/>
+			<xs:element name="case_participant" type="case_participant" maxOccurs="unbounded" minOccurs="0"/>
+			<xs:element name="case_professional" type="case_professional" maxOccurs="unbounded" minOccurs="0"/>
+			
+			<xs:element name="status" type="case_status_change" minOccurs="0" maxOccurs="unbounded" />  <!--refactored as a complex type in v1.031 -->
+			
+			<!-- three status-related elements deprecated in 1.031 -->
+			<!--xs:element name="status" type="case_state"/>
+			<xs:element name="case_opening_dt" type="xs:date"/>
+			<xs:element name="case_closing_dt" type="xs:date" minOccurs="0" nillable="true"/-->
+			<!-- end deprecation -->
+				
+			<xs:element name="county" type="county"/>
+			<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="case_email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="attachment_list" type="attachment_list" minOccurs="0" maxOccurs="1"/>			
+			<xs:element name="associated_assessment" type="assessment" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="associated_intake" type="intake_report" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="associated_placement" type="placement" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="associated_referral" type="resource_referral" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="associated_court_action" type="court_action" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="associated_financial_info" type="financial_info" minOccurs="0" maxOccurs="unbounded"/>
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="case_status_change">
+		<xs:sequence>
+			<xs:element name="status_dtm" type="xs:dateTime"/>
+			<xs:element name="case_status" type="case_state" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="case_plan">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="case_plan_id" type="identifier" />
+			<xs:element name="case_id" type="identifier" />
+			<xs:element name="person_id" type="identifier" />
+			<xs:element minOccurs="0" name="case_plan_goal"><!--only applies to focus child-->
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Not established"/>
+						<xs:enumeration value="Reunification"/>
+						<xs:enumeration value="Adoptive placement"/>
+						<xs:enumeration value="Emancipation as a result of a planned, permanent living arrangement"/>
+						<xs:enumeration value="Fit and Willing Relative placement"/>
+						<xs:enumeration value="Guardianship"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="goal_start_dt" type="xs:date" minOccurs="0" maxOccurs="1" /> 
+			<xs:element name="goal_end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>		
+			
+	<xs:complexType name="case_history_inquiry"><!--used to request a populated case record, with optional supplemental items such as intakes and referrals -->
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="requestor" type="partner_system"/>
+			<xs:element name="case_id" type="identifier"/>
+			<!--xs:element name="include_embedded_attachments" type="xs:boolean" /-->
+			<xs:element name="include_detail" minOccurs="0" maxOccurs="unbounded">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="basic"/>
+						<xs:enumeration value="all"/>
+						<xs:enumeration value="assessments"/>
+						<xs:enumeration value="intakes"/>
+						<xs:enumeration value="placements"/>
+						<xs:enumeration value="referrals"/>
+						<!--xs:enumeration value="attachments"/-->
+						<xs:enumeration value="court_actions"/>
+						<xs:enumeration value="financial_info"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="case_list_inquiry"><!--used to request a simple list of cases for a person -->
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="requestor" type="partner_system"/>
+			<xs:element name="person_id" type="identifier"/>
+			<xs:element name="active_only" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="case_list_inquiry_result"><!--this returns results from a corresponding case_list_inquiry-->
+		<xs:sequence>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="original_requestor" type="partner_system"/>
+			<xs:element name="case_data" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="case_id" type="identifier"/>
+						<xs:element name="case_name" type="xs:string"/>
+						<xs:element name="case_email" type="xs:string" minOccurs="0"/>
+						<xs:element name="status" type="case_state"/>
+						<xs:element name="case_opening_dt" type="xs:date"/>
+						<xs:element name="case_closing_dt" type="xs:date" minOccurs="0" nillable="true"/>
+						<xs:element name="county" type="county"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="case_participant">
+		<xs:sequence>
+			<!--xs:element name="person_id" type="identifier"/-->   <!--deprecated in favor of full object v014-->
+			<xs:element name="person" type="person"/>
+			<xs:element name="focus_child" type="xs:boolean"/>
+			
+			<xs:element name="involvement_type" type="case_involvement_type" minOccurs="0"/><!--only applies to focus child-->
+			<xs:element name="involvement_type_effective_dt" type="xs:date" />
+			
+			<!-- a more complex implementation of dates would involve creating a complex type involvement_status_change with date and involvement type as members,
+			     then adding a multivalued element of this type.  -->
+			
+			<!-- begin and end dates deprecated in 1.031 -->
+			<!--
+			<xs:element name="involvement_type_begin_dt" type="xs:date" nillable="true" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="involvement_type_end_dt" type="xs:date" nillable="true" minOccurs="0" maxOccurs="1"/>  -->
+			
+			<xs:element name="case_plan" type="case_plan" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="household_member" type="xs:boolean"/>
+			<xs:element name="current_household_id" type="identifier" minOccurs="0"/>
+			<xs:element name="participant_relationship" type="participant_relationship" minOccurs="0" maxOccurs="unbounded"/>
+			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="case_professional">
+		<xs:sequence>
+			<!--xs:element name="person_id" type="identifier"/-->  <!--deprecated in favor of full object v014-->
+			<xs:element name="person" type="person"/>
+			<xs:element name="secondary_id" type="identifier" minOccurs="0"/><!--to be used to pass a legacy user or staff ID different from their primary person ID-->
+			<xs:element name="case_role">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="FCM"/>
+						<xs:enumeration value="Supervisor"/>
+						<xs:enumeration value="Probation officer"/>
+						<xs:enumeration value="Other"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="involvement_start_dt" nillable="true" minOccurs="0" type="xs:date"/>
+			<xs:element name="involvement_end_dt" nillable="true" minOccurs="0" type="xs:date"/>
+			<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+</xs:schema>

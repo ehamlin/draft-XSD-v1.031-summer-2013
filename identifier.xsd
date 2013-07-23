@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<xs:include schemaLocation="global.xsd"/>
+	
+		
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<!-- schema for identifier -->
+	<xs:complexType name="identifier">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="source_system" type="partner_system" />
+			<xs:element name="id_type" type="id_type" />
+			<xs:element name="id_value" type="xs:integer" />
+			<xs:element name="legacy_source_system" type="partner_system" nillable="true" minOccurs="0"  />
+			<xs:element name="legacy_id_type" type="id_type" nillable="true" minOccurs="0" />
+			<xs:element name="legacy_id_value" type="xs:integer" nillable="true" minOccurs="0"  />
+			<xs:element name="linked_identifier" type="identifier" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- schema used for mapping and unmapping IDs -->
+	<xs:complexType name="id_mapping">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="map"/>
+						<xs:enumeration value="unmap"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="identifier_1" type="identifier"/>
+			<xs:element name="identifier_2" type="identifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--schemas for the id_mapping_inquiry event-->
+	
+	<xs:complexType name="id_mapping_inquiry">
+		<xs:sequence>
+			<xs:element name="identifier" type="identifier"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="id_mapping_inquiry_results">
+		<xs:sequence>
+			<xs:element name="source_identifier" type="identifier"/>
+			<xs:element name="mapped_identifier" type="identifier" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="participant_relationship">
+		<xs:sequence>
+			<xs:element name="related_participant" type="identifier" />
+			<xs:element name="participant_is_focus_child" type="xs:boolean" />
+			<xs:element name="relationship" type="relationship" />
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

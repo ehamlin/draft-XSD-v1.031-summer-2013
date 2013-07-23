@@ -1,0 +1,151 @@
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+	</xs:annotation>
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="attachment.xsd"/>
+	<xs:include schemaLocation="person.xsd"/><!--schema for passing info on court and legal actions -->
+	<xs:complexType name="court_action">
+		<xs:sequence>
+			<xs:element name="action" minOccurs="0" >  <!--temporarily optional to facilitate interim testing-->
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="court_action_id" type="identifier" />
+			<xs:element name="type" type="legal_action" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="date" type="xs:date" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="person_id" type="identifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="case_id" type="identifier" minOccurs="0" maxOccurs="1"/><!--xs:element name="judge" type="xs:string" minOccurs="0" maxOccurs="1"/--><!--converted to full person object v0.14-->
+			<xs:element name="case_email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="judge" type="person" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="court" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="court_order" type="court_order" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="docket_no" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="related_document" type="attachment" minOccurs="0" maxOccurs="unbounded"/>
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="court_order" >
+		<xs:sequence>
+			<xs:element name="action">  
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="court_order_id" type="identifier" minOccurs="0"/>  <!--temporarily optional to facilitate interim testing-->
+			<xs:element name="outcome" type="court_outcome" minOccurs="1" maxOccurs="1" />
+			<xs:element name="reason" type="court_outcome_reason" minOccurs="0" maxOccurs="1" />
+			<xs:element name="receiving_agency" type="partner_agency" minOccurs="0" maxOccurs="1" />
+			<xs:element name="associated_person" type="identifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="person_from_whom_child_was_removed" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="last_date_child_lived_with_removal_person" type="xs:date" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="legal_action">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Detention/Emergency Detention"/>
+			<xs:enumeration value="CHINS - Initial"/>
+			<xs:enumeration value="CHINS - Pre-trial/Facilitation"/>
+			<xs:enumeration value="CHINS - Fact Finding"/>
+			<xs:enumeration value="Dispositional"/>
+			<xs:enumeration value="Dispositional Modification"/>
+			<xs:enumeration value="Rule to Show Cause"/>
+			<xs:enumeration value="TPR - Voluntary or Involuntary"/>
+			<xs:enumeration value="Periodic Review"/>
+			<xs:enumeration value="Permanency Hearing"/>
+			<xs:enumeration value="Guardianship"/>
+			<xs:enumeration value="Wardship Dismissal"/>
+			<xs:enumeration value="Final Decree of Adoption"/>
+			<xs:enumeration value="Other (Motions, Reports, etc)"/>
+			<xs:enumeration value="Petition for CHINS (Administrative)"/>
+			<xs:enumeration value="Data Conversion"/>
+			<xs:enumeration value="Court Order without Hearing"/>
+			<xs:enumeration value="Petition for TPR"/>
+			<xs:enumeration value="Petition for Collaborative Care Program"/>
+			<xs:enumeration value="Probation-related hearing"/>
+
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="court_outcome">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="3 Month Progress Report"/>
+			<xs:enumeration value="Admission of Invol. TPR Petition"/>
+			<xs:enumeration value="Adoption Finalized with Subsidy"/>
+			<xs:enumeration value="Adoption Finalized without Subsidy"/>
+			<xs:enumeration value="Adoption Petition Dismissed"/>
+			<xs:enumeration value="Affidavit"/>
+			<xs:enumeration value="Agreed Order"/>
+			<xs:enumeration value="Appointment of CASA/GAL"/>
+			<xs:enumeration value="CHINS Adjudication"/>
+			<xs:enumeration value="Court Case Closed/Child has been in foster care"/>
+			<xs:enumeration value="Court Case Closed/Child never removed"/>
+			<xs:enumeration value="Custody to non-custodial parent"/>
+			<xs:enumeration value="Denial of Invol. TPR Petition"/>
+<!--			removed at Cheryl's request in v23-->
+			<!--xs:enumeration value="Detention Denied - Child returned home, under supervision"/-->
+			<xs:enumeration value="Detention Denied - Dismissal"/>
+			<xs:enumeration value="Detention Denied/Child not removed"/>
+			<xs:enumeration value="Dismissal of CHINS Petition Ordered/Child has been in foster care"/>
+			<xs:enumeration value="Dismissal of CHINS Petition/ Child has not been removed"/>
+			<xs:enumeration value="End Collaborative Care Program"/>
+			<xs:enumeration value="Found in Contempt"/>
+			<xs:enumeration value="Guardianship Dismissed"/>
+			<xs:enumeration value="Guardianship Finalized with Subsidy"/>
+			<xs:enumeration value="Guardianship Finalized without Subsidy"/>
+			<xs:enumeration value="Hearing Continuance (can be multiple dates over time)"/>
+			<xs:enumeration value="Hearing Not Held"/>
+			<xs:enumeration value="Hearing Reset/Continuance"/>
+			<xs:enumeration value="Incarceration Ordered"/>
+			<xs:enumeration value="Invol. TPR Dismissed"/>
+			<xs:enumeration value="Invol. TPR Granted"/>
+			<xs:enumeration value="Modification of Services and Programs"/>
+			<xs:enumeration value="Motion(s)"/>
+			<xs:enumeration value="No Contempt Found"/>
+			<xs:enumeration value="Parent/Party Denied Allegations"/>
+			<xs:enumeration value="Parental Participation Ordered"/>
+			<xs:enumeration value="Permanency Plan Approved by Court"/>
+			<xs:enumeration value="Permanency Plan Continued by Court"/>
+			<xs:enumeration value="Proceed to Disposition On Same Date"/>
+			<xs:enumeration value="Removal Ordered and Child Placed in Out of Home Care"/>
+			<xs:enumeration value="Removal Ordered from Custodial Parent and Child Directly Placed with Non-Custodial Parent"/>
+			<xs:enumeration value="School of Legal Settlement and/or Change of Legal Settlement"/>
+			<xs:enumeration value="Services ordered by the Court (Home-based and all other services)"/>
+			<xs:enumeration value="THV (for child in placement)"/>
+			<xs:enumeration value="THV Extended"/>
+			<xs:enumeration value="TPR (15 of 22 months required Petition) Filed and Withdrawn by justification petition"/>
+			<xs:enumeration value="TPR Fact-Finding Set"/>
+			<xs:enumeration value="Vol. TPR Granted"/>
+			<xs:enumeration value="Vol. TPR Petition Dismissed"/>
+			<xs:enumeration value="Wardship Continued"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="court_outcome_reason">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Permanent Placement with a Relative"/>
+			<xs:enumeration value="Reunification"/>
+			<xs:enumeration value="Transfer of Placement and Care to Another Indiana State Agency"/>
+			<xs:enumeration value="Emancipation"/>
+			<xs:enumeration value="Runaway with Wardship Dismissed"/>
+			<xs:enumeration value="Child is entering the Collaborative Care Program"/>
+			<xs:enumeration value="Death of Child"/>
+			<xs:enumeration value="Guardianship"/>
+			<xs:enumeration value="Adoption"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

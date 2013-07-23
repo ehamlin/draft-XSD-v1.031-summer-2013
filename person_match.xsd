@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="address.xsd"/>
+	<xs:include schemaLocation="cpi_status.xsd" />
+	
+	<!--this xsd defines various schemas used by the person matching (clearance) events-->
+	
+	<!-- 	schema used by clearance functions to request a search for possible matching person records -->
+	<!--	the caller can pass an arbitrary request_id which will be handed back by the broker in any person_match_result
+		records that are created as a result of the person_match_request.  this enables the caller to correlate a result with
+		a request as needed.
+		
+		the requestor_person_id is loaded with the person identifier info for the requestor's corresponding person record.
+		this is used by BizTalk to do an initial ODS query, in case a person-to-person mapping is already on file.
+	-->
+	
+	<xs:complexType name="person_match_request">
+		
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string" />
+			<xs:element name="requesting_system" type="partner_system"/>
+			<xs:element name="requestor_person_id" type="identifier" minOccurs="0" nillable="true"/>
+			<xs:element name="target_system" type="partner_system" />
+			<xs:element name="match_keys" type="person_match_keys"/>
+			<xs:element name="ods_match_sufficient" type="xs:boolean"/>
+		</xs:sequence>
+				
+	</xs:complexType>
+
+	
+	<!-- 	schema used to communicate results of a person match request-->
+	<!--	original_request_id correlates to the request_id element in the person_match_request that spawned this person_match_result.
+		for the broker it is just a passthrough.
+	-->
+	
+
+	<xs:complexType name="person_match_result">
+		
+		<xs:sequence>
+			<xs:element name="original_request_id" type="xs:string" />
+			<xs:element name="requestor_person_id" type="identifier" />
+			<xs:element name="partner_system" type="partner_system"/>
+			<xs:element name="match_info" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="matched_person_identifier" type="identifier"/>
+						<xs:element name="match_score" type="xs:decimal"/>
+						<xs:element name="matched_person_demographics" type="person_match_keys"/>
+						<xs:element name="matched_person_cpi_status" type="cpi_action" minOccurs="0" />
+						<xs:element name="additional_info" type="xs:string" minOccurs="0" />
+						<xs:element name="case_id" type="identifier" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+		</xs:sequence>
+			
+	</xs:complexType>
+
+	
+	<!-- schema for <person_match_keys> record, used as an element in <identifier_mapping> 
+	   Note that search keys are attributes vs. elements and are not in a all, so any can be 
+	  omitted without breaking the record.  This is to accommodate diverse clearance systems which
+	  may require different sets of match keys -->
+	
+	
+	<xs:complexType name="person_match_keys">
+		<xs:sequence>
+			<xs:element name="last_name" type="xs:string" minOccurs="0" />
+			<xs:element name="first_name" type="xs:string" minOccurs="0" />
+			<xs:element name="middle_name" type="xs:string" minOccurs="0" />
+			<xs:element name="aliases" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="suffix" type="xs:string" minOccurs="0" />
+			<xs:element name="birthdate" type="xs:date" minOccurs="0" nillable="true" />
+			<xs:element name="gender" type="xs:string" minOccurs="0" />
+			<xs:element name="ssn" type="xs:string" minOccurs="0" />
+			<xs:element name="race" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="address" type="address" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

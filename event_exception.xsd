@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="global.xsd"/>
+	
+	
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<!-- record used to capture exception information -->
+	
+	<xs:complexType name="event_exception">
+		
+		<xs:sequence>
+			<xs:element name="event_id" type="xs:string"/>
+			<xs:element name="event_type" type="event_type"/>
+			<xs:element name="original_event_dtm" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0" />
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0" />
+			
+			<xs:element name="event_originator" type="partner_system" minOccurs="0"/>
+			<xs:element name="result" type="event_result"/>
+			<xs:element name="description" type="xs:string"/>
+
+			<xs:element name="severity" type="xs:integer"/>
+			<xs:element name="original_event_payload" type="xs:string" minOccurs="0"/>
+			<xs:element name="requested_resolution" type="exception_resolution_type" minOccurs="0" />
+			<xs:element name="message_for_user" type="xs:string" minOccurs="0" />
+			<xs:element name="reference_id" type="identifier" minOccurs="0" maxOccurs="unbounded" />  <!--if this notification is connected with another record, e.g. a person, this is its ID-->
+		</xs:sequence>
+			
+	</xs:complexType>
+	
+	<xs:simpleType name="exception_resolution_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none" />
+			<xs:enumeration value="retry" />
+			<xs:enumeration value="notify_user"/>
+		</xs:restriction>	
+	</xs:simpleType>
+	
+</xs:schema>

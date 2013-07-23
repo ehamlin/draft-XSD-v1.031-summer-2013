@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	
+		
+	<xs:annotation>
+  		<xs:appinfo>version 0.025</xs:appinfo>
+  	</xs:annotation>
+	
+	<!--schema for passing financial transactions of all kinds -->
+	
+	<xs:complexType name="transactions">
+		<xs:sequence>
+			<xs:element name="transaction" type="transaction" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="transaction">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="id" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="related_transaction_id" type="identifier" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="post_dtm" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="type" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="IV-E provider payment"/>
+						<xs:enumeration value="EA provider payment"/>
+						<xs:enumeration value="Other provider payment"/>
+						<xs:enumeration value="Child support payment - CP"/>
+						<xs:enumeration value="Child support payment - NCP"/>
+						<xs:enumeration value="Adoption assistance payment" />
+						<xs:enumeration value="TANF payment" />
+						<xs:enumeration value="Disability payment" />
+						<xs:enumeration value="Veteran benefit payment"/>
+						<xs:enumeration value="Social Security payment" />
+						<xs:enumeration value="Pension payment" />
+						<xs:enumeration value="Insurance payment" />
+						<xs:enumeration value="Unemployment insurance payment"/>
+						<xs:enumeration value="Other payment"/>
+						<xs:enumeration value="Adjustment - overpayment" />
+						<xs:enumeration value="Adjustment - recoupment" />
+						<xs:enumeration value="Refund" />
+						<xs:enumeration value="Trust account balance report" />
+						<xs:enumeration value="Other transaction" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name="amount">
+				<xs:simpleType>
+  					<xs:restriction base="xs:decimal">
+    						<xs:fractionDigits value="2"/>
+  					</xs:restriction>
+				</xs:simpleType>	
+			</xs:element>	
+			<xs:element name="payee_name" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="source_system_payee_id" type="xs:integer" minOccurs="0" maxOccurs="1" />
+			<xs:element name="payor_name" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="source_system_payor_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="source_system_contract_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="beneficiary_name" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="approved_by" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="delivery_mode" type="xs:string" minOccurs="0" maxOccurs="1" />  <!--e.g. check, EFT-->
+			<xs:element name="ledger_acct" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="ledger_subacct" type="xs:string" minOccurs="0" maxOccurs="1" />			
+			<xs:element name="related_record_id" type="identifier" minOccurs="0" maxOccurs="unbounded"/> <!--if this tx is associated with a referral etc., this is the pointer to it-->
+			<xs:element name="create_dtm" type="xs:dateTime" minOccurs="0" maxOccurs="1" xsi:nil="true" nillable="true"/>
+			<xs:element name="update_dtm" type="xs:dateTime" minOccurs="0" maxOccurs="1" xsi:nil="true" nillable="true"/>
+			<xs:element name="note_id" type="identifier" minOccurs="0" maxOccurs="unbounded"/>  <!--one or more notes can be attached-->  
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

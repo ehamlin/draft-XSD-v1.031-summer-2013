@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+  		
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="address.xsd"/>
+	<xs:include schemaLocation="email.xsd"/>
+	<xs:include schemaLocation="phone.xsd"/>
+	<xs:include schemaLocation="alias.xsd"/>
+	<xs:include schemaLocation="attachment.xsd"/>
+	<xs:include schemaLocation="education.xsd"/>
+	
+	<xs:complexType name="person">
+		<xs:sequence>
+		
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+						<xs:enumeration value="expunge" />
+						<xs:enumeration value="describe"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/>  <!--used only in conjunction with person_inquiry event-->
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0" />
+			
+			<xs:element name="person_id" type="identifier" minOccurs="1" maxOccurs="1"/>
+
+			<xs:element name="address" type="address" minOccurs="0" maxOccurs="unbounded" /> 
+			<xs:element name="email_address" type="email" minOccurs="0" maxOccurs="unbounded"/> 
+			<xs:element name="alias" type="alias" minOccurs="0" maxOccurs="unbounded"/> 
+			<xs:element name="phone" type="phone" minOccurs="0" maxOccurs="unbounded"/> 
+
+			<xs:element name="calculated_age" type="year_month_age" minOccurs="0" />
+			<xs:element name="estimated_age" type="year_month_age" minOccurs="0" />
+			<xs:element name="birth_date" type="xs:date" minOccurs="0" />
+			<xs:element name="birth_date_verification"  type="demographic_evidence_type" minOccurs="0" />
+			<xs:element name="birth_date_verification_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />	
+			<xs:element name="birth_country" type="country" minOccurs="0" />
+			<xs:element name="title" type="xs:string" minOccurs="0" />
+			<xs:element name="first_name" type="xs:string" minOccurs="0" />
+			<xs:element name="middle_name" type="xs:string" minOccurs="0" />
+			<xs:element name="last_name" type="xs:string" minOccurs="0" />
+			<xs:element name="suffix" type="xs:string" minOccurs="0" />
+			<xs:element name="ssn" type="xs:string" minOccurs="0" />
+			<xs:element name="ssn_verification"  type="demographic_evidence_type" minOccurs="0" />
+			<xs:element name="ssn_verification_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="primary_language" type="language" minOccurs="0" />
+			<xs:element name="secondary_language" type="language" minOccurs="0" />
+			<xs:element name="gender" type="gender" minOccurs="0" />
+			<xs:element name="marital_status" type="marital_status" minOccurs="0" />
+			<xs:element name="employment_status" type="employment_status" minOccurs="0" />
+			<xs:element name="religion" type="religion" minOccurs="0" />
+			<xs:element name="death_date" type="xs:date" minOccurs="0" />
+			<xs:element name="death_date_verification"  type="demographic_evidence_type" minOccurs="0" />
+			<xs:element name="death_date_verification_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="county_of_death" type="county" minOccurs="0" />
+			<xs:element name="state_of_death" type="state" minOccurs="0" />
+			<xs:element name="country_of_death" type="country" minOccurs="0" />
+			<xs:element name="race" type="race" minOccurs="0" maxOccurs="unbounded"/>  
+			<xs:element name="reason_race_unspecified" minOccurs="0" maxOccurs="1" >  
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="Unknown"/>
+						<xs:enumeration value="Declined"/>
+						<xs:enumeration value="Unable to Communicate" />
+					</xs:restriction>
+				</xs:simpleType>		
+			</xs:element>
+			<xs:element name="ethnicity" type="ethnicity" minOccurs="0" maxOccurs="unbounded"/> 
+			<xs:element name="citizenship" type="citizenship" minOccurs="0"  />
+			<xs:element name="citizenship_status_verification"  type="citizen_status_evidence_type" minOccurs="0"/>
+			<xs:element name="citizenship_status_verification_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="language_code" type="xs:string" minOccurs="0"  />
+			<xs:element name="secondary_language_code" type="xs:string" minOccurs="0"  />
+			<xs:element name="native_american_tribe" type="native_american_tribe" minOccurs="0"  />
+			<xs:element name="educational_status" type="educational_status" minOccurs="0" />
+			<xs:element name="educational_profile" type="educational_profile" minOccurs="0" maxOccurs="1" />
+			<xs:element name="person_is_user" type="xs:boolean" minOccurs="0" />
+			<xs:element name="user_account_name" type="xs:string" minOccurs="0" />
+			<xs:element name="user_id" type="identifier" minOccurs="0" />
+			<xs:element name="department_name" type="xs:string" minOccurs="0" />
+			<xs:element name="role_info" type="xs:string" minOccurs="0" />
+			<xs:element name="manager" type="person" minOccurs="0" />
+			<xs:element name="administrative_office" type="county" minOccurs="0"/>
+			
+			<!--DCS-specific conversion support items follow-->
+			
+			<xs:element name="legacy_id" type="identifier" minOccurs="0"/>
+			<xs:element name="caregiver_code" type="xs:string" minOccurs="0" />
+			<xs:element name="abandoned" type="xs:boolean" minOccurs="0" />
+			<xs:element name="adopted" type="xs:boolean" minOccurs="0" />
+			<xs:element name="birth_country_id" type="xs:integer" minOccurs="0" />
+			<xs:element name="criminal_history_check" type="xs:boolean" minOccurs="0" />
+			<xs:element name="declined" type="xs:boolean" minOccurs="0" />
+			<xs:element name="hispanic_origin" type="xs:boolean" minOccurs="0" />
+			<xs:element name="reporter_code" nillable="true" minOccurs="0" type="xs:string" /> 
+			<xs:element name="screened" type="xs:boolean" minOccurs="0" /> 
+			<xs:element name="special_accommodation" nillable="true" type="xs:string" minOccurs="0" /> 
+  			<xs:element name="special_consideration" nillable="true" type="xs:string" minOccurs="0" />
+			<xs:element name="deceased" type="xs:boolean" minOccurs="0" />
+			
+			<!--support for passing person network-->
+			
+			<xs:element name="associated_person" type="associated_person" minOccurs="0" maxOccurs="unbounded" />
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="person_inquiry">  <!--used to request a populated person record--> 
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string" minOccurs="0" />
+			<xs:element name="requestor" type="partner_system" />
+			<xs:element name="person_id" type="identifier" />
+			<xs:element name="person_owner" type="partner_system" />
+		</xs:sequence>	
+	</xs:complexType>
+
+	<xs:complexType name="person_merge">   
+		<xs:sequence>
+			<xs:element name="duplicate_person_id" type="identifier" />
+			<xs:element name="action" nillable="true" minOccurs="0" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="merge"/>
+						<xs:enumeration value="split"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+				
+			<xs:element name="effective_dtm" type="xs:dateTime" />
+			<xs:element name="master_person_id" type="identifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>	
+	</xs:complexType>
+	
+	<xs:complexType name="associated_person">
+		<xs:sequence>
+			<xs:element name="person_id" type="identifier" />
+			<xs:element name="relationship" type="relationship" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="shared_household_id" type="	identifier" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="association_start_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="association_end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="demographic_evidence_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Unable to Verify"/>
+			<xs:enumeration value="Estimated at Intake"/>
+			<xs:enumeration value="Birth Certificate"/>
+			<xs:enumeration value="Death Certificate"/>
+			<xs:enumeration value="Obituary"/>
+			<xs:enumeration value="Client Statement/Records"/>
+			<xs:enumeration value="Court Document"/>
+			<xs:enumeration value="Employer/Wage/Labor Org Document"/>
+			<xs:enumeration value="Family Statement/Records"/>
+			<xs:enumeration value="Financial Institution Document"/>
+			<xs:enumeration value="Hospital Certificate"/>
+			<xs:enumeration value="ICES"/>
+			<xs:enumeration value="Immigration Documents"/>
+			<xs:enumeration value="Medical Documents"/>
+			<xs:enumeration value="School Document"/>
+			<xs:enumeration value="Social Security Administration Document"/>
+			<xs:enumeration value="Social Security Card"/>
+			<xs:enumeration value="Tax Document"/>
+			<xs:enumeration value="Third Party Statement"/>
+			<xs:enumeration value="Tribal Record/Document"/>		
+			<xs:enumeration value="Vital Statistics"/>
+			<xs:enumeration value="Unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="citizen_status_evidence_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="School Document"/>
+			<xs:enumeration value="Client Statement or Records"/>
+			<xs:enumeration value="Government Records/Document"/>
+			<xs:enumeration value="Financial Institution Document"/>
+			<xs:enumeration value="Employer/Wage/Labor Org. Document"/>
+			<xs:enumeration value="Court Document"/>
+			<xs:enumeration value="Vital Statistics"/>
+			<xs:enumeration value="Tax Document"/>
+			<xs:enumeration value="Third Party Statement"/>
+			<xs:enumeration value="Tribal Record/Document"/>
+			<xs:enumeration value="Social Security Administration Document"/>
+			<xs:enumeration value="Medical Document"/>
+			<xs:enumeration value="Immigration Documents"/>
+			<xs:enumeration value="Family Statement/Records"/>
+			<xs:enumeration value="ICES"/>
+			<xs:enumeration value="US Passport Issued w/o Limitation, Even Expired"/>
+			<xs:enumeration value="Certification of Naturalization - N-550 or N-570"/>
+			<xs:enumeration value="Certificate of Citizenship - N-560 or N-561"/>
+			<xs:enumeration value="Birth Certificate"/>
+			<xs:enumeration value="Cert. of Birth Abroad of US Citizen (FS-240/FS-545"/>
+			<xs:enumeration value="US Citizen I.D. Card (DHS Form I-197)"/>
+			<xs:enumeration value="Final Adoption Papers Decree w/Child's Name and Place of US Birth"/>
+			<xs:enumeration value="Military Record with Place of US Birth"/>
+			<xs:enumeration value="Certificate of Report of Birth - DS-1350"/>
+			<xs:enumeration value="Alien registration card I 94"/>
+			<xs:enumeration value="INS Form SFN641 signed by parents"/>
+			<xs:enumeration value="INS Form I 551"/>
+			<xs:enumeration value="INS Form 1688B"/>
+			<xs:enumeration value="INS Form I 766"/>
+					
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

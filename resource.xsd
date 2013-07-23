@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<xs:include  schemaLocation="contract_service.xsd"/>
+	<xs:include  schemaLocation="address.xsd"/>
+	<xs:include  schemaLocation="phone.xsd"/>
+	<xs:include  schemaLocation="email.xsd"/>
+	<xs:include  schemaLocation="identifier.xsd"/>
+	<xs:include  schemaLocation="global.xsd" />
+	
+	
+	<!-- schema for resource -->
+	<!-- This schema contains info on resources/providers -->
+
+	<xs:complexType name="resource" >
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="resource_id" type="identifier" />
+			<!--xs:element name="legacy_resource_id" type="identifier" minOccurs="0"/-->
+			<xs:element name="resource_name" type="xs:string" />
+			<xs:element name="FEIN" type="xs:string" minOccurs="0"/>
+			<xs:element name="address" type="address" minOccurs="0" maxOccurs="unbounded" /> <!--multiple allowed-->
+			<xs:element name="email_address" type="email" minOccurs="0" maxOccurs="unbounded"/> <!--multiple allowed-->
+			<xs:element name="phone" type="phone" minOccurs="0" maxOccurs="unbounded"/> <!--multiple allowed-->
+			<xs:element name="administrative_county" type="county" />  <!-- this is the county that "owns" the resource administratively -->
+			<xs:element name="family_structure" type="family_structure" minOccurs="0" maxOccurs="1" />
+			<xs:element name="associated_person" type="resource_person" minOccurs="0" maxOccurs="unbounded" />   <!--only used if the resource is one or more individuals, e.g. therapist, foster parent-->
+			<xs:element name="associated_resource" type="associated_resource" minOccurs="0" maxOccurs="unbounded" />   <!-- references other resources related in some role to this one -->
+			<xs:element name="resource_type" type="resourcetypecode" maxOccurs="unbounded" />
+			<xs:element name="verification_status" type="resource_verification_status" minOccurs="0" />
+			<xs:element name="status" type="resourcestatus" minOccurs="0" />
+			
+			<!--the multivalue authorized_service array specifies the services provided by this resource-->
+			<!-- this will NOT be used as long as this info is stored in KT -->
+			
+			<xs:element name="authorized_service" type="authorized_service" minOccurs="0" maxOccurs="unbounded" />	
+
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<!--resource_person is a mapping between a person and a resource-->
+	
+	<xs:simpleType name="resource_person_role">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Licensing worker" />
+			<xs:enumeration value="Other worker type" />
+			<xs:enumeration value="Provider" />
+			<xs:enumeration value="Occupant" />
+			<xs:enumeration value="Volunteer" />
+			<xs:enumeration value="Employee" />
+		</xs:restriction>
+	
+	</xs:simpleType>
+	
+	<xs:complexType name="resource_person">
+		<xs:sequence>
+			<xs:element name="person_id" type="identifier"  />
+			<xs:element name="resource_id" type="identifier" />
+			<xs:element name="association_begin_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0" />
+			<xs:element name="association_end_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0" />
+			<xs:element name="role" type="resource_person_role" />
+		</xs:sequence>
+	
+	</xs:complexType>
+	
+	
+	<!--associated_resource is a mapping between one resource and another resource-->
+	
+	<xs:complexType name="associated_resource">
+		<xs:sequence>
+			<xs:element name="associated_resource_id" type="identifier"  />
+			
+			<!-- The association_type element can repeat, so you could indicate multiple relationship descriptors-->
+			<xs:element name="association_type" minOccurs="1" maxOccurs="unbounded">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Parent agency"/>
+						<xs:enumeration value="Supervising entity"/>
+						<xs:enumeration value="Fiscal intermediary/Pay-to"/>
+						<xs:enumeration value="Licensing entity"/>
+						<xs:enumeration value="Subcontractor"/>
+						<xs:enumeration value="Other"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="association_begin_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0" />
+			<xs:element name="association_end_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0" />
+		</xs:sequence>
+	
+	</xs:complexType>
+	
+	<xs:complexType name="authorized_service" >
+		<xs:sequence>
+			<!--contract_service elements define the specific services this resource can provide-->
+			<xs:element name="contract_service" type="contract_service"  />
+			
+			<!--the following elements are specific to the service, given that the resource may provide multiple services with different specifics-->
+			<xs:element name="county" type="county" maxOccurs="unbounded" />
+			<xs:element name="service_begin_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0" />
+			<xs:element name="service_end_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0"  />
+			<xs:element name="contact_name" type="xs:string" minOccurs="0" />
+			<xs:element name="contact_phone" type="phone" minOccurs="0" />
+			<xs:element name="service_delivery_address" type="address" maxOccurs="unbounded" /> <!--embed or point to counties above-->
+			<xs:element name="offers_adoption_only" type="xs:boolean" minOccurs="0" />
+			<xs:element name="accepts_special_needs" type="xs:boolean" minOccurs="0" />
+			<xs:element name="accepts_physical_abuse_victims" type="xs:boolean" minOccurs="0" />
+			<xs:element name="accepts_sexual_abuse_victims" type="xs:boolean" minOccurs="0" />
+			<xs:element name="accepts_neglect_victims" type="xs:boolean" minOccurs="0" />
+			<xs:element name="accepts_medicaid" type="xs:boolean" minOccurs="0" />
+			<xs:element name="accepts_sexual_predators" type="xs:boolean" minOccurs="0" />
+		</xs:sequence>	
+		
+	</xs:complexType>
+
+		<xs:simpleType name="resourcestatus">
+	
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active" />
+			<xs:enumeration value="Restricted" />
+			<xs:enumeration value="On hold"/>
+			<xs:enumeration value="Inactive"/>
+		</xs:restriction>
+	
+	</xs:simpleType>
+	
+	<xs:simpleType name="resource_verification_status">
+	
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Not Verified" />
+			<xs:enumeration value="Verified" />
+			<xs:enumeration value="Duplicate"/>
+		</xs:restriction>
+	
+	</xs:simpleType>
+	
+	<xs:simpleType name="resourcetypecode">
+		<xs:restriction base="xs:string">
+			<!--xs:enumeration value="Child Care Center"/>
+			<xs:enumeration value="Day Care Home"/-->
+			<xs:enumeration value="Correctional Institution/Detention Facility"/>
+			<xs:enumeration value="Nursing Home"/>
+			<xs:enumeration value="Foster Family Home"/>
+			<xs:enumeration value="Group Home"/>
+			<xs:enumeration value="Host Home"/>
+			<xs:enumeration value="Supervising Agency"/>
+			<xs:enumeration value="Child Caring Institution"/>
+			<xs:enumeration value="Licensed Child Placing Agency"/>
+			<xs:enumeration value="Private Secure Facility"/>
+			<xs:enumeration value="Out of State Foster/Relative Home"/>
+			<xs:enumeration value="Out of State Residential Care Facility"/>
+			<xs:enumeration value="Hospital"/>
+			<xs:enumeration value="Bureau of Developmental Disabilities Services/Certified Facility"/>
+			<xs:enumeration value="Transitional Housing"/>
+			<!--xs:enumeration value="Attorney"/>
+			<xs:enumeration value="Family Support"/>
+			<xs:enumeration value="Family Preservation"/-->
+			<xs:enumeration value="Mental Health and Addiction Services"/>
+			<xs:enumeration value="Adoption"/>
+			<!--xs:enumeration value="Health Services"/>
+			<xs:enumeration value="Children, Youth and Families"/>
+			<xs:enumeration value="Special Groups and Services"/>
+			<xs:enumeration value="Consumer Services"/-->
+			<xs:enumeration value="Community Service Provider"/>
+			<xs:enumeration value="Conversion Only"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>
+
+

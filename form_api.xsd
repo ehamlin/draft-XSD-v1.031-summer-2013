@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- standard API for generating forms from Casebook -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo>version 1.0</xs:appinfo>
+	</xs:annotation>	
+
+	<xs:complexType name="form_info">
+		<xs:sequence>
+			<xs:element name="form_name" type="xs:string" />
+			<xs:element name="template" type="xs:string" />
+			<xs:element name="context_url" type="xs:string" />
+			<xs:element name="payload" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="delivery_method" type="form_delivery_method" minOccurs="0" />
+			<xs:element name="delivery_details" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="form_delivery_method">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="browser" />
+			<xs:enumeration value="filesystem" />
+			<xs:enumeration value="email"/>
+			<xs:enumeration value="database"/>
+		</xs:restriction>
+	</xs:simpleType>		
+		
+</xs:schema>

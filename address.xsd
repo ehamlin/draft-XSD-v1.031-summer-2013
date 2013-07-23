@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<xs:include schemaLocation="global.xsd" />
+	<xs:include schemaLocation="identifier.xsd" />
+	
+	<xs:complexType name="address">
+		<xs:sequence>
+			<xs:element name="action" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="address_type" minOccurs="0" maxOccurs="1" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Residential" />
+						<xs:enumeration value="Temporary Residential" />
+						<xs:enumeration value="Service Delivery Site" />
+						<xs:enumeration value="Business" />
+						<xs:enumeration value="Other" />
+						<xs:enumeration value="Current Location" />
+						<xs:enumeration value="Unknown" />
+					</xs:restriction>
+				</xs:simpleType>	
+			</xs:element> 		
+			<xs:element name="address_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="street_number" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="direction" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="street_name" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="street_suffix" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="apt_number" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="rural_route" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="po_box" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="address_additional_line" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="state" type="state" minOccurs="0" maxOccurs="1" />
+			<xs:element name="zipcode" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="county" type="county" minOccurs="0" maxOccurs="1" />
+			<xs:element name="country" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="owner_id_type" type="entity_type" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="owner_id" type="identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="created_at" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="updated_at" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="note_id" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="mailing_address" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="primary_address" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="legal_address" type="xs:boolean" minOccurs="0" maxOccurs="1"/> 
+			
+			<!--the formatted_address element enables the caller to pass the address as a simple text block,
+			without parsing the individual components -->
+			
+			<xs:element name="formatted_address" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			
+			<!--the following date items were added in XSD v017 to support date spans when an address is referenced by a person or other record-->
+			<xs:element name="start_dt" type="xs:date" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1"/>
+			
+		</xs:sequence>
+  	</xs:complexType>	  	
+	
+	
+</xs:schema>

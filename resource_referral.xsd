@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<xs:include  schemaLocation="identifier.xsd"/>
+	<xs:include  schemaLocation="attachment.xsd"/>  <!--added v .011-->
+	
+	<!--The case_resource_referrals package is used to pass arrays of approved referrals -->
+
+	<xs:complexType name="case_resource_referrals_package">
+		<xs:sequence>
+			<xs:element name="case_id" type="identifier" minOccurs="0"/>  <!--omitted if referral is for services provided in connection with an assessment -->
+			<xs:element name="assessment_id" type="identifier" minOccurs="0"/>  <!--omitted if referral is connected to case-->
+			<xs:element name="resource_referrals" type="resource_referral" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="service_descriptor">
+		<xs:sequence>
+			<!--xs:element name="service_descriptor_id" type="xs:integer" /-->
+			<xs:element name="person_id" type="identifier" />
+	
+			<xs:element name="when_service_need_identified_dtm" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0"/>  <!--not strictly for KT, but useful to capture for PIP etc.-->
+			<xs:element name="service_county" type="xs:string" minOccurs="0"/>   <!--need this here?-->
+	
+			<xs:element name="units" type="xs:float" minOccurs="0"/>
+			<xs:element name="unit_base" type="xs:string" minOccurs="0"/>
+			<xs:element name="frequency" type="xs:string" minOccurs="0"/>
+			<xs:element name="proposed_start_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0"/>
+			<xs:element name="remarks" type="xs:string" minOccurs="0"/>  <!--if budgeting system alters request, it sends back its reasons here-->
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- schema for resource referral -->
+	<!-- This schema contains info on a referral to a specific resource -->
+	<!-- It can be used to submit a referral for approval or to transmit the approval itself-->
+	<!-- Note that the referral can be tied to multiple recipients, who are assumed to map to persons-->
+	
+	<xs:complexType name="resource_referral">
+		<xs:sequence>
+			<xs:element name="referral_id" type="identifier"/>
+			<xs:element name="recipient" type="service_recipient_detail" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="resource_id" type="identifier" minOccurs="0" />  <!--may be omitted in some legacy referrals-->
+			<xs:element name="resource_nm" type="xs:string" minOccurs="0" />  <!--to support conversion-->
+			<xs:element name="referral_dtm" type="xs:dateTime" xsi:nil="true" nillable="true" minOccurs="0" />
+			<xs:element name="referral_type" type="xs:string" minOccurs="0"/>  <!--need something like this?-->
+			<xs:element name="service_begin_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0"/>
+			<xs:element name="service_end_dt" type="xs:date" xsi:nil="true" nillable="true"  minOccurs="0"/>
+			<xs:element name="approval_status" type="approvalstatus" minOccurs="0"/>
+			<xs:element name="approval_dt" type="xs:date" xsi:nil="true" nillable="true" minOccurs="0" />
+			<xs:element name="remarks" type="xs:string" minOccurs="0"/>  <!--if budgeting system alters request, it sends back its reasons here-->
+			<xs:element name="referral_document" type="attachment" minOccurs="0" maxOccurs="unbounded"/>  <!--added v0.011-->
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--supporting types-->
+	
+	<!--service_recipient_ids is used to indicate the persons receiving the services.  a complex type is needed because the recipient
+	may be identified with both a person ID and a resource ID (the latter if they are also a resource, like a foster parent, in which
+	case the referral represents a resource providing a service to another resource -->
+	
+	<xs:complexType name="service_recipient_detail">
+		<xs:sequence>
+			<xs:element name="person_id" type="identifier"/>
+			<xs:element name="service" type="service" minOccurs="1" maxOccurs="unbounded" />
+			
+			<!--the resource_id is provided only if the recipient is ALSO a resource, e.g. a foster parent receiving services-->
+			<!--in order to claim IV-E admin reimbursements, the system needs to know the resource ID-->								
+			<xs:element name="resource_id" type="identifier" minOccurs="0"/> 
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--xs:element name="service"-->
+	
+	<!--this schema is used to communicate details of a service -->
+	<xs:complexType name="service">
+		<xs:sequence>
+			<xs:element name="service_standard" type="xs:string" />
+			<xs:element name="service_standard_code" type="xs:string" />
+			<xs:element name="service_component" type="xs:string" />
+			<xs:element name="service_component_code" type="xs:string" />
+			<xs:element name="service_descriptor" type="service_descriptor" minOccurs="0"/>
+			<xs:element name="authorization_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="authorized_by" type="xs:string" minOccurs="0"/>
+			<xs:element name="authorizer_id" type="identifier" minOccurs="0"/>
+			<xs:element name="authorization_decision_dtm" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="authorized_units" type="xs:float" minOccurs="0"/>
+			<xs:element name="authorized_begin_dt" type="xs:date" minOccurs="0"/>
+			<xs:element name="authorized_last_delivery_dt" type="xs:date" minOccurs="0"/>
+			<xs:element name="remarks" type="xs:string" minOccurs="0"/>  <!--if budgeting system alters request, it sends back its reasons here-->
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="approvalstatus">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="pending"/>
+			<xs:enumeration value="approved"/>
+			<xs:enumeration value="denied"/>
+			<xs:enumeration value="modification requested"/>
+			<xs:enumeration value="cancelled"/>
+			<xs:enumeration value="unknown"/>			
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

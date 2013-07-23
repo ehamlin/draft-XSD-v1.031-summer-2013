@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Placement.xsd  -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+  	
+	<xs:include schemaLocation="contract_service.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="address.xsd"/><!--	per Cheryl, we need the ability to raise a placement event not only for new placements, but also to to show that 
+		the contract_service has changed on an EXISTING one.  It's not a new episode of care.  We can do this by keeping the
+		placement_id the same across subsequent updates and using the "contract service change" action. -->
+	<xs:complexType name="placement">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="terminate"/>
+						<xs:enumeration value="delete"/>
+						<xs:enumeration value="describe"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="placement_id" type="identifier"/>
+			<xs:element name="case_id" type="identifier" minOccurs="0" maxOccurs="unbounded"/><!--optional, because some removals occur before a case is established-->
+			<xs:element name="assessment_id" type="identifier" minOccurs="0"/><!--used if placement occurs during assessment phase -->
+			<xs:element name="person_id" type="identifier"/>
+			<xs:element name="resource_id" type="identifier" minOccurs="0"/>
+			<xs:element name="person_hosting_trial_home_visit" type="identifier" minOccurs="0" />
+			<xs:element name="placement_type" type="placement_type" />
+			<xs:element name="temporary_absence_type" type="absence_type" minOccurs="0"/>
+			<xs:element name="placement_address" type="address" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="contract_service" type="contract_service" minOccurs="0"/><!--in contract_service.xsd; optional-->
+			<xs:element name="physical_removal_dtm" type="xs:dateTime" minOccurs="0" xsi:nil="true" nillable="true"/><!--used only if we choose to capture removals separately as case events-->
+			<xs:element name="legal_removal_dtm" type="xs:dateTime" minOccurs="0" xsi:nil="true" nillable="true"/>
+			<xs:element name="child_ever_adopted_any_state" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="child_age_at_adoption" type="adoption_age_category" minOccurs="0"  maxOccurs="1" />
+			<xs:element name="removal_court_ordered" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="removal_was_voluntary_collaborative_care_placement" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="family_structure_physical_removal" type="family_structure" minOccurs="0" maxOccurs="1" />
+			<xs:element name="placement_begin_dtm" type="xs:dateTime" />
+			<xs:element name="placement_end_dtm" type="xs:dateTime" xsi:nil="true" nillable="true" minOccurs="0"/>
+			<xs:element name="relationship_between_child_and_foster_family" type="placement_relationship" minOccurs="0" />
+			<xs:element name="reason_for_location_change" type="xs:string" minOccurs="0" />
+			<xs:element name="conditions_leading_to_removal" type="removal_conditions" minOccurs="0" maxOccurs="1" />
+			<xs:element name="approved_by_supervisor" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="who_approved" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="when_approved" type="xs:dateTime" minOccurs="0" maxOccurs="1" />
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="placement_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Placement"/>
+			<xs:enumeration value="Temporary Absence"/>
+			<xs:enumeration value="Trial home Visit"/>
+			<xs:enumeration value="Runaway"/>
+			<xs:enumeration value="Collaborative Care"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="adoption_age_category">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="less than 2 years old"/>
+			<xs:enumeration value="2-5 years old"/>
+			<xs:enumeration value="6-12 years old"/>
+			<xs:enumeration value="13 or older"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="absence_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Hospital"/>
+			<xs:enumeration value="Overnight Camp"/>
+			<xs:enumeration value="Respite Placement"/>
+			<xs:enumeration value="Visit with Siblings"/>
+			<xs:enumeration value="Visit with Other Caregivers"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="removal_conditions">
+		<xs:sequence>
+			<xs:element name="physical_abuse" type="xs:boolean" minOccurs="1" />
+			<xs:element name="sexual_abuse" type="xs:boolean" minOccurs="1" />
+			<xs:element name="neglect" type="xs:boolean" minOccurs="1" />
+			<xs:element name="parent_alcohol_abuse" type="xs:boolean" minOccurs="1" />
+			<xs:element name="parent_drug_abuse" type="xs:boolean" minOccurs="1" />
+			<xs:element name="child_alcohol_abuse" type="xs:boolean" minOccurs="1" />
+			<xs:element name="child_disability" type="xs:boolean" minOccurs="1" />
+			<xs:element name="child_behavioral_problem" type="xs:boolean" minOccurs="1" />
+			<xs:element name="death_of_parent" type="xs:boolean" minOccurs="1" />
+			<xs:element name="incarceration_of_parent" type="xs:boolean" minOccurs="1" />
+			<xs:element name="caretaker_inability_to_cope" type="xs:boolean" minOccurs="1" />
+			<xs:element name="abandonment" type="xs:boolean" minOccurs="1" />
+			<xs:element name="relinquishment" type="xs:boolean" minOccurs="1" />
+			<xs:element name="child_drug_abuse" type="xs:boolean" minOccurs="1" />
+			<xs:element name="inadequate_housing" type="xs:boolean" minOccurs="1" />
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="placement_relationship">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="no relationship"/>
+			<xs:enumeration value="adoptive grandparent"/>
+			<xs:enumeration value="first cousin once removed"/>
+			<xs:enumeration value="first cousin"/>
+			<xs:enumeration value="grandparent"/>
+			<xs:enumeration value="great uncle or aunt"/>
+			<xs:enumeration value="great-grandparent"/>
+			<xs:enumeration value="great-great-grandparent"/>
+			<xs:enumeration value="great-great-great-grandparent"/>
+			<xs:enumeration value="half-sibling"/>
+			<xs:enumeration value="niece or nephew"/>
+			<xs:enumeration value="non-custodial parent"/>
+			<xs:enumeration value="other relative"/>
+			<xs:enumeration value="sibling"/>
+			<xs:enumeration value="sibling-in-law"/>
+			<xs:enumeration value="step-parent"/>
+			<xs:enumeration value="step-sibling"/>
+			<xs:enumeration value="uncle or aunt"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+				
+</xs:schema>

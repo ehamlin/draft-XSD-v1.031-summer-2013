@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+		<xs:appinfo>Note: schema first published in release 0.013</xs:appinfo>
+	</xs:annotation>
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	
+	<xs:complexType name="eligibility_inquiry">
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string"/>
+			<xs:element name="requesting_system" type="partner_system"/>
+			<xs:element name="requestor_person_id" type="identifier" minOccurs="1"/>
+			<xs:element name="person_id" type="identifier" minOccurs="1" maxOccurs="1" />
+			<xs:element name="program" type="eligibility_program"/><!-- used to specify the program (e.g. IV-E) we are inquiring about; type definition below -->
+			<xs:element name="return_complete_history" type="xs:boolean"/><!--if true, Casebook returns the entire timeline of eligibility periods and events -->
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="eligibility_inquiry_result">
+		<xs:sequence>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/><!--used in conjunction with person_history_inquiry event-->
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0"/>
+			<xs:element name="original_requestor_person_id" type="identifier" minOccurs="1"/>
+			<xs:element name="person_id" type="identifier" minOccurs="1" maxOccurs="1" />
+			<xs:element name="eligibility_info" type="eligibility_action" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="no_info_found" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- eligibility_timeline added in v022 to support passing an array of eligibility records -->
+	
+	<xs:complexType name="eligibility_timeline_extract">
+		<xs:sequence>
+			<xs:element name="record_count" type="xs:integer" />
+			<xs:element name="eligibility_record" type="eligibility_action" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- schema for <eligibility_action>, used by the eligibility_action event -->
+	
+	<xs:complexType name="eligibility_action">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="person_id" type="identifier"/>
+			<xs:element name="case_id" type="identifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="assessment_id" type="identifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="program" type="eligibility_program"/>
+			
+<!--			each period of eligibility is returned as an instance of eligibility_period, sorted oldest to most recent-->
+
+			<xs:element name="eligibility_period" type="eligibility_period" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="eligibility_program">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IV-E"/>
+			<xs:enumeration value="IV-E Waiver"/>
+			<xs:enumeration value="Collaborative Care"/>
+			<xs:enumeration value="Emergency Assistance"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="eligibility_period">
+		<xs:sequence>
+			<xs:element name="period_begin_dt" type="xs:date"/>
+			<xs:element name="period_end_dt" type="xs:date" minOccurs="0" maxOccurs="1" xsi:nil="true" nillable="true"/>
+			<xs:element name="status">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Pending"/><!--future use - no current implementation-->
+						<xs:enumeration value="Eligible"/>
+						<xs:enumeration value="Claim Admin"/>
+						<xs:enumeration value="Ineligible"/>
+						<xs:enumeration value="No Admin"/>
+						<xs:enumeration value="Closed"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="decision_rule_result" type="xs:string" minOccurs="0" maxOccurs="1"/><!--future use - no current implementation-->
+			<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

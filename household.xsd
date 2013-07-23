@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+	</xs:annotation>
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="address.xsd"/>
+	
+	<xs:complexType name="household">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="update"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="household_id" type="identifier" />
+			<xs:element name="household_name" type="xs:string" />
+			<xs:element name="address_stay" type="address_stay" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="member" type="household_member" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="create_dt" type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="address_stay">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="none" />
+						<xs:enumeration value="add" />
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="address_stay_id" type
+			<xs:element name="address_id" type="identifier" />
+			<xs:element name="residence_period" type="datetime_span" />
+		</xs:sequence>	
+	</xs:complexType>
+	
+	<xs:complexType name="household_member">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="none" />
+						<xs:enumeration value="add" />
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="person_id" type="identifier" />
+			<xs:element name="residence_period" type="datetime_span" />
+			<xs:element name="primary_household" type="xs:boolean" />
+		</xs:sequence>	
+	</xs:complexType>
+	
+</xs:schema>

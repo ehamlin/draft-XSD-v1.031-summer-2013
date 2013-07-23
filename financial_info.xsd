@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+	</xs:annotation>
+
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="attachment.xsd" />
+	<xs:include schemaLocation="benefit_info.xsd" />
+
+	<!-- financial_inquiry -->
+	<!-- structure used to request specific financial data for a specific person -->
+
+	<xs:complexType name="financial_inquiry" >
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string"/>
+			<xs:element name="requesting_system" type="partner_system"/>
+			<xs:element name="person_id" type="identifier" minOccurs="1" />
+			<xs:element name="target_financial_data_type" type="financial_data_type" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="begin_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="financial_inquiry_result">
+		<xs:sequence>
+
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/>	 
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0" />
+			<xs:element name="financial_info" type="financial_info" minOccurs="0" />
+			<xs:element name="no_info_found" type="xs:boolean" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Schema for <financial_info> -->
+	<!-- This record is used to pass various data items connected with a person's financial situation.	-->
+
+	<xs:complexType name="financial_info">
+
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="delete"/>
+						<xs:enumeration value="update"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="person_id" type="identifier" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="case_id" type="identifier" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="asset" type="asset" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="earned_income" type="earned_income" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="unearned_income" type="unearned_income" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="living_expense" type="living_expense" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="liability" type="liability" minOccurs="0" maxOccurs="unbounded" />
+
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<xs:simpleType name="financial_data_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="asset"/>
+			<xs:enumeration value="earned income"/>
+			<xs:enumeration value="unearned income"/>
+			<xs:enumeration value="living expense"/>
+			<xs:enumeration value="liability"/>
+			<xs:enumeration value="all"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="asset">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="financial_record_id" type="identifier" minOccurs="0" maxOccurs="1" /> 
+			<xs:element name="person_id" type="identifier" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="asset_type" type="asset_type"/>
+			<xs:element name="current_value" type="xs:float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="value_as_of_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="account_id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="start_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="data_is_for_eligibility_month" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="last_verified_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="verified_by" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="evidence" minOccurs="0" maxOccurs="unbounded" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Unable to Verify"/>
+						<xs:enumeration value="Client Statement or Records"/>
+						<xs:enumeration value="Community Org/Business Records"/>
+						<xs:enumeration value="Contract"/>
+						<xs:enumeration value="Court Document"/>
+						<xs:enumeration value="Employer/Wage/Labor/Tax Receipts"/>
+						<xs:enumeration value="Family Statement or Records"/>
+						<xs:enumeration value="Financial Institution Document"/>
+						<xs:enumeration value="Government Records/Document"/>
+						<xs:enumeration value="ICES"/>
+						<xs:enumeration value="None Required"/>
+						<xs:enumeration value="Red Book or Blue Book"/>
+						<xs:enumeration value="Refused to Verify"/>
+						<xs:enumeration value="Pay Stub"/>
+						<xs:enumeration value="School Document"/>
+						<xs:enumeration value="Social Security Administration Document"/>
+						<xs:enumeration value="Tax Document"/>
+						<xs:enumeration value="Third Party Statement"/>
+						<xs:enumeration value="Vital Statistics"/>
+						<xs:enumeration value="data conversion only"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="evidence_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<xs:simpleType name="asset_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Cash on Hand"/>
+			<xs:enumeration value="Checking Account"/>
+			<xs:enumeration value="Savings Account"/>
+			<xs:enumeration value="Motor Vehicle (includes auto, boat, RV)"/>
+			<xs:enumeration value="Cash value of Life Insurance Policy"/>
+			<xs:enumeration value="Savings Certificate/CD"/>
+			<xs:enumeration value="Stocks/Bonds"/>
+			<xs:enumeration value="Trust Fund/Estate"/>
+			<xs:enumeration value="Other Asset Type"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="earned_income">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="financial_record_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="person_id" type="identifier" minOccurs="1" maxOccurs="unbounded" /><!-- added 1.029-->
+			<xs:element name="earned_income_type" type="earned_income_type"/>
+			<xs:element name="period_amount" type="xs:float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="frequency" type="frequency" minOccurs="0" maxOccurs="1" />
+			<xs:element name="associated_employer_id" type="identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="associated_job_id" type="identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="data_is_for_eligibility_month" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="start_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="last_verified_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="verified_by" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="evidence" minOccurs="0" maxOccurs="unbounded" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Unable to Verify"/>
+						<xs:enumeration value="Client Statement or Records"/>
+						<xs:enumeration value="Community Org/Business Records"/>
+						<xs:enumeration value="Contract"/>
+						<xs:enumeration value="Court Document"/>
+						<xs:enumeration value="Employer/Wage/Labor/Tax Receipts"/>
+						<xs:enumeration value="Family Statement or Records"/>
+						<xs:enumeration value="Financial Institution Document"/>
+						<xs:enumeration value="Government Records/Document"/>
+						<xs:enumeration value="ICES"/>
+						<xs:enumeration value="None Required"/>
+						<xs:enumeration value="Red Book or Blue Book"/>
+						<xs:enumeration value="Refused to Verify"/>
+						<xs:enumeration value="Pay Stub"/>
+						<xs:enumeration value="School Document"/>
+						<xs:enumeration value="Social Security Administration Document"/>
+						<xs:enumeration value="Tax Document"/>
+						<xs:enumeration value="Third Party Statement"/>
+						<xs:enumeration value="Vital Statistics"/>
+						<xs:enumeration value="data conversion only"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="evidence_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<xs:simpleType name="earned_income_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Employment"/>
+			<xs:enumeration value="Self-Employment"/>
+			<xs:enumeration value="In-kind Earnings"/>
+			<xs:enumeration value="Other Earned Income"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="unearned_income">	  <!--benefit_info.xsd already has a good schema, benefit_info, for this type-->
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="financial_record_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="income_details" type="benefit_info" />
+			<xs:element name="evidence" minOccurs="0" maxOccurs="unbounded" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Unable to Verify"/>
+						<xs:enumeration value="Client Statement or Records"/>
+						<xs:enumeration value="Community Org/Business Records"/>
+						<xs:enumeration value="Contract"/>
+						<xs:enumeration value="Court Document"/>
+						<xs:enumeration value="Employer/Wage/Labor/Tax Receipts"/>
+						<xs:enumeration value="Family Statement or Records"/>
+						<xs:enumeration value="Financial Institution Document"/>
+						<xs:enumeration value="Government Records/Document"/>
+						<xs:enumeration value="ICES"/>
+						<xs:enumeration value="None Required"/>
+						<xs:enumeration value="Red Book or Blue Book"/>
+						<xs:enumeration value="Refused to Verify"/>
+						<xs:enumeration value="Pay Stub"/>
+						<xs:enumeration value="School Document"/>
+						<xs:enumeration value="Social Security Administration Document"/>
+						<xs:enumeration value="Tax Document"/>
+						<xs:enumeration value="Third Party Statement"/>
+						<xs:enumeration value="Vital Statistics"/>
+						<xs:enumeration value="data conversion only"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="evidence_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="start_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="data_is_for_eligibility_month" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<xs:complexType name="liability">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="financial_record_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="liability_type" type="liability_type"/>
+			<xs:element name="balance_owed" type="xs:float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="periodic_paydown_amount" type="xs:float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="paydown_frequency" type="frequency" minOccurs="0" maxOccurs="1" />
+			<xs:element name="account_id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="start_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="data_is_for_eligibility_month" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="last_verified_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="verified_by" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="evidence" minOccurs="0" maxOccurs="unbounded" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Unable to Verify"/>
+						<xs:enumeration value="Client Statement or Records"/>
+						<xs:enumeration value="Community Org/Business Records"/>
+						<xs:enumeration value="Contract"/>
+						<xs:enumeration value="Court Document"/>
+						<xs:enumeration value="Employer/Wage/Labor/Tax Receipts"/>
+						<xs:enumeration value="Family Statement or Records"/>
+						<xs:enumeration value="Financial Institution Document"/>
+						<xs:enumeration value="Government Records/Document"/>
+						<xs:enumeration value="ICES"/>
+						<xs:enumeration value="None Required"/>
+						<xs:enumeration value="Red Book or Blue Book"/>
+						<xs:enumeration value="Refused to Verify"/>
+						<xs:enumeration value="Pay Stub"/>
+						<xs:enumeration value="School Document"/>
+						<xs:enumeration value="Social Security Administration Document"/>
+						<xs:enumeration value="Tax Document"/>
+						<xs:enumeration value="Third Party Statement"/>
+						<xs:enumeration value="Vital Statistics"/>
+						<xs:enumeration value="data conversion only"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="evidence_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="liability_type" >
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Alimony"/>
+			<xs:enumeration value="Child Care"/>
+			<xs:enumeration value="Child Support"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="living_expense">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="financial_record_id" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="expense_type" type="living_expense_type"/>
+			<xs:element name="amount" type="xs:float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="frequency" type="xs:float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="payee_person_id" type="identifier" minOccurs="0" />  <!--make option in 1.029-->
+			<xs:element name="payee_name" type="xs:string" minOccurs="0" />  <!--make option in 1.029-->
+			<xs:element name="payee_address" type="address" minOccurs="0"/>
+			<xs:element name="account_id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="start_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="end_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="last_verified_dt" type="xs:date" minOccurs="0" maxOccurs="1" />
+			<xs:element name="data_is_for_eligibility_month" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="verified_by" type="identifier" minOccurs="0" maxOccurs="1" />
+			<xs:element name="evidence" minOccurs="0" maxOccurs="unbounded" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Unable to Verify"/>
+						<xs:enumeration value="Client Statement or Records"/>
+						<xs:enumeration value="Community Org/Business Records"/>
+						<xs:enumeration value="Contract"/>
+						<xs:enumeration value="Court Document"/>
+						<xs:enumeration value="Employer/Wage/Labor/Tax Receipts"/>
+						<xs:enumeration value="Family Statement or Records"/>
+						<xs:enumeration value="Financial Institution Document"/>
+						<xs:enumeration value="Government Records/Document"/>
+						<xs:enumeration value="ICES"/>
+						<xs:enumeration value="None Required"/>
+						<xs:enumeration value="Red Book or Blue Book"/>
+						<xs:enumeration value="Refused to Verify"/>
+						<xs:enumeration value="Pay Stub"/>
+						<xs:enumeration value="School Document"/>
+						<xs:enumeration value="Social Security Administration Document"/>
+						<xs:enumeration value="Tax Document"/>
+						<xs:enumeration value="Third Party Statement"/>
+						<xs:enumeration value="Vital Statistics"/>
+						<xs:enumeration value="data conversion only"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="evidence_attachment" type="attachment" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<xs:simpleType name="living_expense_type" >
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Rent"/>
+			<xs:enumeration value="Mortgage"/>
+			<xs:enumeration value="Credit card interest payment"/>
+			<xs:enumeration value="Vehicle loan payment"/>
+			<xs:enumeration value="Vehicle operating expense"/>
+			<xs:enumeration value="Home equity loan payment"/>
+			<xs:enumeration value="Other loan payment"/>
+			<xs:enumeration value="Utilities"/>
+			<xs:enumeration value="Child support"/>
+			<xs:enumeration value="Spousal support"/>
+			<xs:enumeration value="Legal expense"/>
+			<xs:enumeration value="Food expense"/>
+			<xs:enumeration value="Medical expense"/>
+			<xs:enumeration value="Insurance payment"/>
+			<xs:enumeration value="Government obligation"/>
+			<xs:enumeration value="Child care"/>
+			<xs:enumeration value="Self-employment expense"/>
+			<xs:enumeration value="Other expense"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

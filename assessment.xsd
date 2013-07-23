@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+			
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+  	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="person.xsd"/>
+	<xs:include schemaLocation="intake.xsd"/>
+	
+	<xs:complexType name="assessment">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="describe"/>
+						<xs:enumeration value="create"/>
+						<xs:enumeration value="update participants"/>
+						<xs:enumeration value="update professionals"/>
+						<xs:enumeration value="update status"/>
+						<xs:enumeration value="update all"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0" />
+			<!--used only in conjunction with assessment_inquiry event-->
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0" />
+			<xs:element name="assessment_id" type="identifier"/>
+			<xs:element name="assessment_name" type="xs:string"/>
+			<xs:element name="assessment_participant" type="assessment_participant" maxOccurs="unbounded" minOccurs="0" />
+			<xs:element name="assessment_professional" type="assessment_professional" maxOccurs="unbounded" minOccurs="0" />
+			
+			<xs:element name="allegation" type="allegation" minOccurs="1" maxOccurs="unbounded" />  <!-- added in 1.031 -->
+			
+			<xs:element name="status" type="assessment_status" />
+			<xs:element name="status_dtm" type="xs:dateTime"/>
+		
+			<!-- these dates and the status element are deprecated in xsd v1.031
+			<xs:element name="status" type="assessment_status"/>
+			<xs:element name="assessment_create_dt" type="xs:date"/>
+			<xs:element name="assessment_accepted_dt" minOccurs="0" nillable="true" type="xs:date"/>  -->
+			
+			<xs:element name="county" type="county"/>
+			<xs:element name="comments" type="xs:string" maxOccurs="1" minOccurs="0" />
+			<xs:element name="assessment_email" type="xs:string" maxOccurs="1" minOccurs="0" />
+			<xs:element name="associated_intakes" type="identifier" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="assessment_status_change">
+		<xs:sequence>
+			<xs:element name="status_dtm" type="xs:dateTime"/>
+			<xs:element name="assessment_status" type="assessment_status" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- allegation type and allegation_status were added in XSD 1.031 -->
+	<xs:complexType name="allegation">
+		<xs:sequence>
+			<xs:element name="alleged_victim_id" type="identifier" />
+			<xs:element name="alleged_perpetrator_id" type="identifier"/>
+			<xs:element name="maltreatment_type" type="allegation_type" />
+			<xs:element name="maltreatment_subtype" type="maltreatment_subtype" minOccurs="0"/ >
+			<xs:element name="allegation_status" type="allegation_status" />
+			<xs:element name="status_dtm" type="xs:dateTime" />	
+		</xs:sequence>
+	</xs:complexType	
+		
+	<xs:simpleType name="allegation_status">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Substantiated"/>
+			<xs:enumeration value="Unsubstantiated"/>
+			<xs:enumeration value="Undetermined" />
+		</xs:restriction>	
+	</xs:simpleType>
+	
+	<xs:simpleType name="maltreatment_subtype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Environment Life/Health Endangering"/>
+			<xs:enumeration value="Abandonment"/>
+			<xs:enumeration value="Close/Confinement"/>
+			<xs:enumeration value="Death due to neglect"/>
+			<xs:enumeration value="Drug exposed infant (other)"/>
+			<xs:enumeration value="Drug exposed infant (meth)"/>
+			<xs:enumeration value="Educational Neglect"/>
+			<xs:enumeration value="Emotional Abuse - Emotional abuse or injury"/>
+			<xs:enumeration value="Failure to Thrive"/>
+			<xs:enumeration value="Fetal Alcohol Syndrome"/>
+			<xs:enumeration value="Lack of Food, Shelter, Clothing"/>
+			<xs:enumeration value="Lack of Supervision"/>
+			<xs:enumeration value="Lock in/out"/>
+			<xs:enumeration value="Malnutrition"/>
+			<xs:enumeration value="Medical Neglect"/>
+			<xs:enumeration value="Near fatality due to neglect; serious bodily injury requiring hospitalization in an intensive care unit"/>
+			<xs:enumeration value="Poor Hygiene"/>
+			<xs:enumeration value="Child Molesting - Under 14; performs or submits; sexual intercourse; deviate sexual conduct, touching, fondling"/>
+			<xs:enumeration value="Child Seduction - 16 or 17; sexual intercourse, deviate sexual conduct with step or adoptive parent, residential facility staff, etc."/>
+			<xs:enumeration value="Criminal Deviate Conduct - Oral or anal sex or use of object; force, threat, or unaware"/>
+			<xs:enumeration value="Exploitation/Pornography - Child is photographed, videotaped, etc."/>
+			<xs:enumeration value="Harmful/Obscene Performance - Parent allows child to participate in act that usually is photographed, videotaped, etc."/>
+			<xs:enumeration value="Incest - Sexual intercourse, deviate sexual conduct w/relative (excluding cousins)"/>
+			<xs:enumeration value="Indecent Exposure - Child is a victim of or parent allows to commit; public place in public"/>
+			<xs:enumeration value="Living in home with sexual perpetrator and victim - Rebuttable presumptions related to living with a sex offender"/>
+			<xs:enumeration value="Prostitution - Child is a victim or parent allows to commit"/>
+			<xs:enumeration value="Rape - Sexual intercourse, force, threat, or unaware"/>
+			<xs:enumeration value="Sexual Misconduct with a Minor - 14 or 15, performs or submits, sexual intercourse, deviate sexual conduct, touching, fondling"/>
+			<xs:enumeration value="Abusive Head Trauma"/>
+			<xs:enumeration value="Asphyxiation/Suffocation"/>
+			<xs:enumeration value="Bruises/Cuts/Welts"/>
+			<xs:enumeration value="Burns/Scalds"/>
+			<xs:enumeration value="Death due to Physical Abuse"/>
+			<xs:enumeration value="Dislocation and Sprains"/>
+			<xs:enumeration value="Drowning"/>
+			<xs:enumeration value="Gunshot Wounds"/>
+			<xs:enumeration value="Exposure to illegal drug manufacturing (methamphetamine) where child resides"/>
+			<xs:enumeration value="Exposure to illegal drug manufacturing (other drug) where child resides"/>
+			<xs:enumeration value="Inappropriate Discipline"/>
+			<xs:enumeration value="Internal Injury"/>
+			<xs:enumeration value="Near fatality due to physical abuse.  Serious bodily injury requiring hospitalization in intensive care unit"/>
+			<xs:enumeration value="Poisoning"/>
+			<xs:enumeration value="Wounds/Punctures/Bites"/>
+		</xs:restriction>
+	</xs:simpleType>	
+		
+			
+	<xs:complexType name="assessment_inquiry">
+<!--used to request a populated assessment record-->
+		<xs:sequence>
+			<xs:element minOccurs="0" name="request_id" type="xs:string"/>
+			<xs:element name="requestor" type="partner_system"/>
+			<xs:element name="assessment_id" type="identifier"/>
+			<xs:element name="assessment_owner" type="partner_system"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="assessment_participant">
+		<xs:sequence>
+			<xs:element name="person" type="person"/>
+			<xs:element name="focus_child" type="xs:boolean"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="involvement_begin_dt" nillable="true" type="xs:date"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="involvement_end_dt" nillable="true" type="xs:date"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="comments" type="xs:string"/>
+			<xs:element name="household_member" type="xs:boolean"/>
+			<xs:element name="current_household_id" type="identifier" minOccurs="0"/>  <!-- added v1.031-->
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="participant_relationship" type="participant_relationship"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="assessment_professional">
+		<xs:sequence>
+			<xs:element name="person" type="person"/>
+			<xs:element minOccurs="0" name="secondary_id" type="identifier"/>
+<!--to be used to pass a legacy user or staff ID different from their primary person ID-->
+			<xs:element name="assessment_role">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="FCM"/>
+						<xs:enumeration value="Supervisor"/>
+						<xs:enumeration value="Probation officer"/>
+						<xs:enumeration value="Other"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element minOccurs="0" name="involvement_start_dt" nillable="true" type="xs:date"/>
+			<xs:element minOccurs="0" name="involvement_end_dt" nillable="true" type="xs:date"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="comments" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="assessment_status">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="In Progress"/>
+			<xs:enumeration value="In Review"/>
+			<xs:enumeration value="Editing Due to Appeal"/>  <!-- modified in 1.031 -->
+			<xs:enumeration value="Approved" />  <!-- new in 1.031 -->
+			<xs:enumeration value="Withdrawn - Screenout"/>  <!--for withdrawn intakes-->
+			<xs:enumeration value="Withdrawn - Duplicate"/> 
+			
+			<!--xs:enumeration value="Substantiated"/-->  <!-- deprecate in 1.031-->
+			<!--xs:enumeration value="Unsubstantiated"/-->  <!-- deprecate in 1.031-->
+			
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

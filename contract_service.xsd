@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+
+
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<!-- schema for contract_service -->
+
+	<!-- This schema contains info on service standards and components associated with contracted resources -->
+	<!-- It contains masterfile data defining service types, not data on specific 	resources -->
+	<!-- Could be used to define services offered by a specific resource -->
+	
+	<!-- Use the action element to indicate changes to both the main record (the service standard) and/or any components nested beneath-->
+	
+	
+	<xs:complexType name="contract_service">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0" >
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="service_code" type="xs:string"/>
+			<xs:element name="service_name" type="xs:string"/>
+			<xs:element name="service_description" type="xs:string"/>
+			<xs:element name="begin_dt" xsi:nil="true" minOccurs="0" nillable="true" type="xs:date"/>
+			<xs:element name="end_dt" xsi:nil="true" minOccurs="0" nillable="true" type="xs:date"/>
+			
+			<xs:element name="components" maxOccurs="unbounded" >
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="billable_component_code" type="xs:string"/>
+						<xs:element name="billable_component_name" type="xs:string"/>
+						<xs:element name="billable_component_description" type="xs:string"/>
+						<xs:element name="begin_dt" xsi:nil="true" type="xs:date"/>
+						<xs:element name="end_dt" xsi:nil="true" type="xs:date"/>
+						<xs:element name="source_system" type="xs:string"/>
+						<xs:element name="unit_base" type="xs:string" />
+						<!--xs:element name="individual_based" type="xs:boolean" /-->
+					</xs:sequence>
+					
+					<!-- future use
+					<xs:attribute name="icd10_code" type="xs:string"/>
+					<xs:attribute name="cpt4_code" type="xs:string"/>
+					<xs:attribute name="infoline_code" type="xs:string"/>
+					<xs:attribute name="NIEM_schema_name" type="xs:string"/>
+					<xs:attribute name="NIEM_schema_version" type="xs:string"/>
+					<xs:attribute name="NIEM_element_name" type="xs:string"/>
+					-->
+					
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

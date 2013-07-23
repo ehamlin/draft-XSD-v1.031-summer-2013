@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+			
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<!-- schema for document, used by the attachment_action event -->
+	
+	<xs:complexType name="attachment">
+		<xs:sequence>
+			<xs:element name="document_id" type="identifier" /> 
+			<xs:element name="associated_entity" type="associated_entity" minOccurs="0" maxOccurs="unbounded" /> 
+			<xs:element name="title" type="xs:string" maxOccurs="1" minOccurs="0" />
+			<xs:element name="file_name" type="xs:string" />
+			<xs:element name="type" type="attachment_type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="user_defined_subtype" type="xs:string" minOccurs="0" />
+			<xs:element name="source_system" type="partner_system" minOccurs="0" />
+			<xs:element name="other_source" type="xs:string" minOccurs="0" />
+			<xs:element name="author" type="xs:string" minOccurs="0" />
+			<xs:element name="mime_type" type="xs:string" minOccurs="0" />
+			<xs:element name="uri_to_file" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="create_dtm" type="xs:dateTime" maxOccurs="1" minOccurs="0" />
+			<xs:element name="update_dtm" type="xs:dateTime" maxOccurs="1" minOccurs="0" />
+			<xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="permissions" type="xs:string" minOccurs="0" />
+			<xs:element name="restricted" type="xs:boolean" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="restricted_until" type="xs:dateTime" minOccurs="0" maxOccurs="1" />
+			<xs:element name="approval_status" type="attachment_approval_status" minOccurs="0" maxOccurs="1" />
+			<xs:element name="content" type="xs:base64Binary" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="electronic_signature" type="xs:base64Binary" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="size_bytes" type="xs:integer" minOccurs="0" maxOccurs="1" />
+			<!--xs:element name="checksum" type="xs:string" minOccurs="0" maxOccurs="1" /-->
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="attachment_type">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Correspondence"/>
+			<xs:enumeration value="Report"/>
+			<xs:enumeration value="Court Order"/>
+			<xs:enumeration value="Appeal"/>
+			<xs:enumeration value="Adoption Certificate"/>
+			<xs:enumeration value="Other Legal"/>
+			<xs:enumeration value="Evidence"/>
+			<xs:enumeration value="Identity"/>
+			<xs:enumeration value="Medical Record"/>
+			<xs:enumeration value="Service Referral"/>
+			<xs:enumeration value="Progress Report"/>
+			<xs:enumeration value="Grade Report"/>
+			<xs:enumeration value="Other School"/>
+			<xs:enumeration value="Payment Authorization"/>
+			<xs:enumeration value="Voucher"/>
+			<xs:enumeration value="Invoice"/>
+			<xs:enumeration value="Other Financial"/>
+			<xs:enumeration value="License"/>
+			<xs:enumeration value="License Change/Revocation"/>
+			<xs:enumeration value="Inspection"/>
+			<xs:enumeration value="Intake Document"/>
+			<xs:enumeration value="Explanation of Benefits - Insurance"/>
+			<xs:enumeration value="Explanation of Benefits - Public Assistance"/>
+			<xs:enumeration value="Hearing-related Document" />    <!--added in v015-->
+			<xs:enumeration value="Other/Unclassified"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="attachment_approval_status">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Approved" />
+			<xs:enumeration value="Not Approved"/>
+			<xs:enumeration value="Pending Approval"/>
+			<xs:enumeration value="Withdrawn"/>
+			<xs:enumeration value="Not Submitted"/>
+			<xs:enumeration value="Conditionally Approved"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="associated_entity">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="delete"/>	
+					</xs:restriction>
+				</xs:simpleType>	
+			</xs:element>
+			<xs:element name="entity_id" type="identifier" />
+			<xs:element name="effective_dtm" type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>	
+		
+	
+	<xs:complexType name="attachment_action">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+						
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="attachment" type="attachment" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="attachment_inquiry">
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="requestor" type="partner_system"/>
+			<xs:element name="attachment_id" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="attachment_inquiry_result">
+		<xs:sequence>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/> <!-- populated with request_id passed in attachment_list_inquiry -->
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0"/>
+			<xs:element name="attachment" type="attachment" nillable="true" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="attachment_list_inquiry">
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string" minOccurs="0"/>
+			<xs:element name="requestor" type="partner_system"/>
+			<xs:element name="attachment_owner_id" type="identifier" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="attachment_list_inquiry_result">
+		<xs:sequence>
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/> <!-- populated with request_id passed in attachment_list_inquiry -->
+			<xs:element name="original_requestor" type="partner_system" minOccurs="0"/>
+			<xs:element name="attachment_list" type="attachment_list" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="attachment_list">
+		<xs:sequence>
+			<xs:element name="attachment_header" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="document_id" type="identifier" />
+						<xs:element name="title" type="xs:string" maxOccurs="1" minOccurs="0" />
+						<xs:element name="file_name" type="xs:string" />
+						<xs:element name="type" type="attachment_type" maxOccurs="1" minOccurs="0" />
+						<xs:element name="user_defined_subtype" type="xs:string" minOccurs="0" />
+						<xs:element name="source_system" type="partner_system" minOccurs="0" maxOccurs="1"  />
+						<xs:element name="uri_to_file" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="create_dtm" type="xs:dateTime" maxOccurs="1" minOccurs="0" />
+						<xs:element name="update_dtm" type="xs:dateTime" maxOccurs="1" minOccurs="0" />
+						<xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1" />
+						<xs:element name="size_bytes" type="xs:integer" minOccurs="0" maxOccurs="1" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+		 
+</xs:schema>
+

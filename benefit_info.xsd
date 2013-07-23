@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+		
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="address.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	
+	<!-- benefits_inquiry -->
+	<!-- simple structure used to request info on specific benefits for a specific person -->
+	
+	<xs:complexType name="benefits_inquiry" >
+		<xs:sequence>
+			<xs:element name="request_id" type="xs:string"/>
+			<xs:element name="requesting_system" type="partner_system"/>
+			<xs:element name="requestor_person_id" type="identifier" minOccurs="1" />
+			<xs:element name="target_benefit" type="income_type" />	<!-- use *all* for all benefits known to the data broker-->
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Schema for <benefit_info> -->
+	<!-- This record is used to pass various data items connected with a benefits received by a person.  -->
+	
+	<xs:complexType name="benefit_info">
+
+		<xs:sequence>
+			
+			<xs:element name="original_request_id" type="xs:string" minOccurs="0"/>  <!--mirrors back the benefits_inquiry request_id, if any-->
+					
+			<!-- identifiers and demographics -->
+			<xs:element name="payee_person_id" type="identifier" minOccurs="0"/>
+			<xs:element name="payee_name" type="xs:string" minOccurs="0"/>
+			<xs:element name="payee_address" type="address" minOccurs="0"/>
+			<xs:element name="benefits_case_id" type="xs:string" minOccurs="0"/> 	
+			<xs:element name="payee_SSN" type="xs:string" minOccurs="0"/>
+     
+     			<!--several data elements derived from the official SSA records, for SSA benefits-->
+     			<xs:element name="ssa_can_bic_no" type="xs:string" minOccurs="0"/>  <!--add minOccurs="0" for 1.029 -->
+     			<xs:element name="ssa_dob" nillable="true" type="xs:string" minOccurs="0" />
+     			<xs:element name="ssa_name_fn" nillable="true" type="xs:string" minOccurs="0" />
+     			<xs:element name="ssa_name_ln" nillable="true" type="xs:string" minOccurs="0" />
+     			<xs:element name="ssa_name_mi" nillable="true" type="xs:string" minOccurs="0" />
+		
+			<xs:element name="ssi_category" type="xs:string" minOccurs="0"/>
+			
+			<!--detail on the income source, including an embedded payment history -->
+			
+			<xs:element name="income_record" type="income_record" minOccurs="0" maxOccurs="unbounded" />
+			
+		
+		</xs:sequence>
+			
+		
+	</xs:complexType>
+	
+	<xs:complexType name="income_record">
+		<xs:sequence>
+			<!--allowing type code to be open-ended for now-->
+			<xs:element name="income_type" type="income_type"/>
+			<xs:element name="payor_income_type" type="xs:string" minOccurs="0"/>
+			<xs:element name="payor_income_subtype" type="xs:string" minOccurs="0"/>
+			<xs:element name="earned" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="income_start_dt" type="xs:date" minOccurs="0"/>
+			<xs:element name="income_end_dt" type="xs:date" minOccurs="0"/>
+			<xs:element name="frequency" type="frequency" minOccurs="0"/>
+			
+			<!--payment element is multivalued; payment history for this income type-->
+			<xs:element name="payment" type="benefit_payment" minOccurs="0" maxOccurs="unbounded" />
+		
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	
+	<xs:complexType name="benefit_payment">
+		<xs:sequence>
+			<xs:element name="payment_id" type="xs:integer" minOccurs="0" />
+			<xs:element name="payment_dt" type="xs:date" nillable="true" minOccurs="0" />
+			<xs:element name="gross_amount" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="net_amount" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="status" type="xs:string" minOccurs="0"/>
+			<xs:element name="account_no" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	
+</xs:schema>

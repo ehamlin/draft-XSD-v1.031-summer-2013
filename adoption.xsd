@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="address.xsd"/>
+	<xs:include schemaLocation="email.xsd" />
+	<xs:include schemaLocation="phone.xsd"/>
+	<xs:include schemaLocation="person.xsd"/>
+	
+	<!--schema for passing adoption information -->
+	
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+  	
+	<xs:complexType name="adoption">
+		<xs:sequence>
+			<xs:element name="adoptee_person_id" type="identifier"/>
+			<xs:element name="prior_name" type="person_name"/>
+			<xs:element name="adoptive_name" type="person_name"/>
+			<xs:element name="ssn" type="xs:string" />	
+			<xs:element name="birth_date" type="xs:date" />
+			<xs:element name="race" type="race"/>
+			<xs:element name="ethnicity" type="ethnicity"/>
+			<xs:element name="adoption_petition_dt" type="xs:date"/>
+			<xs:element name="tpr_mother_dt" type="xs:date" minOccurs="0"/>
+			<xs:element name="tpr_father_dt" type="xs:date" minOccurs="0"/>
+			<xs:element name="finalization_dt" type="xs:date"/>
+			<xs:element name="decree_county" type="county" />
+			<xs:element name="final_fcm" type="person" />
+			<xs:element name="nrae_indicator" type="xs:boolean"/>
+			<xs:element name="medicaid_indicator" type="xs:boolean"/>
+			<xs:element name="applicable_child_indicator" type="xs:boolean"/>
+			<xs:element name="adoption_eligibility" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="IV-E adoption eligible"/>
+						<xs:enumeration value="State adoption eligible"/>
+						<xs:enumeration value="Ineligible"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="eligibility_basis" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="SSI"/>
+						<xs:enumeration value="Prior adoption"/>
+						<xs:enumeration value="Child of a minor parent"/>
+						<xs:enumeration value="AFDC"/>
+						<xs:enumeration value="Applicable child"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>	
+			<xs:element name="adoptive_parent_provider_id" type="identifier" />
+			<xs:element name="provider_home_address" type="address" />
+			<xs:element name="provider_business_address" type="address" />
+			<xs:element name="provider_email_address" type="email"/>
+			<xs:element name="provider_phone" type="phone" />
+			<xs:element name="provider_family_structure" type="xs:string" />
+			
+			<!--the adoptive_parent multi-valued element contains demographic details on
+			       a minimum of one and a maximum of two parents  -->
+			
+			<!--note that the person type has emails, addresses and phones attached to it,
+			       but these do not need to be used since we have separate elements for them  -->
+						       
+			<xs:element name="adoptive_parent" type="person" minOccurs="1" maxOccurs="2" />
+			
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

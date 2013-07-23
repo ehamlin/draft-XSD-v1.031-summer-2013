@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:annotation>
+		<xs:appinfo>version 1.031</xs:appinfo>
+	</xs:annotation>
+	<!-- schema for <cans_result>, used by the cans_action event -->
+	<xs:complexType name="cans_result">
+		<xs:sequence>
+			<xs:element name="action">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+						<xs:enumeration value="none"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="assessed_person_id" type="identifier" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="assessor_person_id" type="identifier" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="cans_assessment_id" type="identifier" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="assessment_dt" type="xs:date" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="cans_tool">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="CANS Comprehensive 0-5"/>
+						<xs:enumeration value="CANS Comprehensive 5-17"/>
+						<xs:enumeration value="CANS Reassessment 0-5"/>
+						<xs:enumeration value="CANS Reassessment 5-17"/>
+						<xs:enumeration value="CANS Short 0-5"/>
+						<xs:enumeration value="CANS Short 5-17"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="why_performed">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Initial"/>
+						<xs:enumeration value="Reassessment"/>
+						<xs:enumeration value="Discharge/Transfer"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="behavioral_health_recommendation" maxOccurs="1" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="No Treatment Services Indicated"/>
+						<xs:enumeration value="Entry Mental Health Services"/>
+						<xs:enumeration value="Supportive Community Based Services"/>
+						<xs:enumeration value="Intensive Community Based Services"/>
+						<xs:enumeration value="Outpatient"/>
+						<xs:enumeration value="Outpatient with Limited Case Management"/>
+						<xs:enumeration value="Supportive Community Services"/>
+						<xs:enumeration value="Intensive Community Services: Wraparound"/>
+						<xs:enumeration value="Intensive Community Services: Community Alternative to Psychiatric Residential Treatment Facility (CA-PRTF Grant)"/>
+						<xs:enumeration value="Intensive Services: CA-PRTF Grant, PRTF or State hospital"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="placement_recommendation" maxOccurs="1" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="DCS/JJ current removal not acknowledged"/>
+						<xs:enumeration value="Regular Foster Care"/>
+						<xs:enumeration value="Foster Care with Services"/>
+						<xs:enumeration value="Therapeutic Foster Care"/>
+						<xs:enumeration value="Group Home Under Age 12"/>
+						<xs:enumeration value="Treatment Foster Care Plus Under Age 12"/>
+						<xs:enumeration value="Group Home - 15 and older"/>
+						<xs:enumeration value="Group Home - 12 to 14"/>
+						<xs:enumeration value="Residential Facility (CCI or Private Secure)"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

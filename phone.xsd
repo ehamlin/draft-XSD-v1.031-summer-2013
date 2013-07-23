@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+		
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<!--schema for passing phone numbers and sets of phone numbers -->
+	
+	<xs:complexType name="phone_numbers">
+		<xs:sequence>
+			<xs:element name="phone" type="phone" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="phone">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="none"/>
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="id" type="identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="number" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="extension" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="label" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Cell"/>
+							<xs:enumeration value="Home"/>
+							<xs:enumeration value="Work"/>
+							<xs:enumeration value="Fax"/>
+							<xs:enumeration value="Pager"/>
+							<xs:enumeration value="Other"/>
+						</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="owner_id" type="identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="created_at" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="updated_at" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="note_id" type="identifier" minOccurs="0" maxOccurs="1"/>  <!--a note can be associated with the phone-->
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,49 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:include schemaLocation="global.xsd"/>
+	<xs:include schemaLocation="identifier.xsd"/>
+	
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+	
+	<!--schema for passing notifications of various types -->
+	
+	<xs:complexType name="notifications">
+		<xs:sequence>
+			<xs:element name="notification" type="notification" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="notification">
+		<xs:sequence>
+			<xs:element name="source_system" type="partner_system" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="type" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="alert"/>
+							<xs:enumeration value="reminder"/>
+							<xs:enumeration value="information"/>
+							<xs:enumeration value="potential resource identified" />
+							<xs:enumeration value="general"/>
+							<xs:enumeration value="inquiry response"/>
+							<xs:enumeration value="error"/>
+						</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="reference_id" type="identifier" minOccurs="0" maxOccurs="unbounded" />  <!--if this notification is connected with another record, e.g. a person, this is its ID-->
+			<xs:element name="message" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="priority" minOccurs="1" maxOccurs="1" >
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Low"/>
+						<xs:enumeration value="Normal" />
+						<xs:enumeration value="High" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>	
+			<xs:element name="deliver_to" type="partner_system" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="notification_dtm" type="xs:dateTime" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,38 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<xs:include schemaLocation="identifier.xsd"/>
+	<xs:include schemaLocation="global.xsd"/>
+	
+	<xs:annotation>
+  		<xs:appinfo>version 1.031</xs:appinfo>
+  	</xs:annotation>
+  	
+	<!--alias-->
+	<xs:complexType name="alias">
+		<xs:sequence>
+			<xs:element name="action" nillable="true" minOccurs="0">
+ 				<xs:simpleType>
+                   	<xs:restriction base="xs:token">
+						<xs:enumeration value="add"/>
+						<xs:enumeration value="update"/>
+						<xs:enumeration value="delete"/>
+						<xs:enumeration value="describe"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="alias_id" type="identifier"/>
+			<xs:element name="alias_type" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Alias"/>
+						<xs:enumeration value="Maiden name"/>
+						<xs:enumeration value="Birth name"/>
+						<xs:enumeration value="Other"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="name" type="person_name" />
+			
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
